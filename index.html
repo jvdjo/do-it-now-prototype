@@ -27,7 +27,7 @@
       min-height: 100vh;
     }
 
-    /* Seletor de Telas Superior */
+    /* Seletor de Telas Superior (Fora do protótipo) */
     .screen-switcher {
       display: flex;
       gap: 8px;
@@ -50,7 +50,7 @@
       color: var(--white);
     }
 
-    /* Carcaça do Celular (Wireframe P&B) */
+    /* Carcaça do Celular (Wireframe P&B 100% Estático) */
     .mobile-frame {
       width: 360px;
       height: 720px;
@@ -60,6 +60,7 @@
       flex-direction: column;
       position: relative;
       overflow: hidden;
+      user-select: none;
     }
 
     .status-bar {
@@ -88,7 +89,7 @@
       display: block;
     }
 
-    /* Barra Inferior (Bottom Bar) */
+    /* Barra Inferior (Bottom Bar Estática) */
     .bottom-nav {
       height: 56px;
       background: var(--white);
@@ -106,7 +107,6 @@
       font-size: 11px;
       color: var(--black);
       background: var(--white);
-      cursor: pointer;
       font-weight: 600;
       text-decoration: none;
       padding: 6px 14px;
@@ -118,7 +118,7 @@
       font-weight: 700;
     }
 
-    /* Floating Action Button (FAB) */
+    /* Floating Action Button (FAB Estático) */
     .fab {
       position: absolute;
       right: 16px;
@@ -132,7 +132,6 @@
       justify-content: center;
       font-size: 24px;
       font-weight: 700;
-      cursor: pointer;
       border: 2px solid var(--black);
     }
 
@@ -281,19 +280,14 @@
     .context-menu-static div:last-child {
       border-bottom: none;
     }
-    .context-menu-link {
-      cursor: pointer;
-      text-decoration: underline;
-    }
 
-    /* Botões de Fluxo */
+    /* Botões Estáticos */
     .btn {
       flex: 1;
       padding: 9px 12px;
       font-size: 12px;
       font-weight: 700;
       border: 2px solid var(--black);
-      cursor: pointer;
       text-align: center;
       background: var(--white);
       color: var(--black);
@@ -315,7 +309,6 @@
       font-weight: 700;
     }
     .back-link {
-      cursor: pointer;
       padding: 2px 6px;
       border: 1px solid var(--black);
       background: var(--white);
@@ -481,7 +474,7 @@
 </head>
 <body>
 
-  <!-- Navegação de telas (Fluxo pré-determinado das 4 telas) -->
+  <!-- Navegação de telas externa ao protótipo (única forma de alternar as 4 telas) -->
   <div class="screen-switcher">
     <button class="switcher-btn active" onclick="showScreen('screen-home')">1. Tela Inicial</button>
     <button class="switcher-btn" onclick="showScreen('screen-step1')">2. Cadastro (Etapa 1)</button>
@@ -531,7 +524,7 @@
           <span class="menu-dots-static">...</span>
         </div>
         <div class="context-menu-static">
-          <div class="context-menu-link" onclick="showScreen('screen-step1')">Editar -&gt;</div>
+          <div>Editar</div>
           <div>Falhar</div>
         </div>
       </div>
@@ -566,13 +559,13 @@
         <div style="font-size: 11px; font-weight: 600;">+ 10 Ouro | + 1.6 EXP</div>
       </div>
 
-      <button class="fab" onclick="showScreen('screen-step1')" title="Ir para Etapa 1">+</button>
+      <div class="fab">+</div>
     </div>
 
     <!-- TELA 2: CADASTRO ETAPA 1 -->
     <div id="screen-step1" class="content-area">
       <div class="page-header">
-        <span class="back-link" onclick="showScreen('screen-home')">&lt; Voltar</span>
+        <span class="back-link">&lt;</span>
         <span>Nova Tarefa (1/2)</span>
       </div>
 
@@ -616,15 +609,15 @@
       <div class="pill-btn-static" style="width: 100%; margin-top: 8px; margin-bottom: 60px;">+ Adicionar lembrete</div>
 
       <div class="fixed-footer-actions">
-        <button class="btn" onclick="showScreen('screen-home')">Cancelar</button>
-        <button class="btn btn-primary" onclick="showScreen('screen-step2')">Próxima Etapa -&gt;</button>
+        <div class="btn">Cancelar</div>
+        <div class="btn btn-primary">Próxima Etapa -&gt;</div>
       </div>
     </div>
 
     <!-- TELA 3: CADASTRO ETAPA 2 -->
     <div id="screen-step2" class="content-area">
       <div class="page-header">
-        <span class="back-link" onclick="showScreen('screen-step1')">&lt; Voltar</span>
+        <span class="back-link">&lt;</span>
         <span>Elementos de RPG (2/2)</span>
       </div>
 
@@ -693,8 +686,8 @@
       <div class="pill-btn-static" style="width: 100%; margin-bottom: 70px;">- Diminuir Habilidade [v]</div>
 
       <div class="fixed-footer-actions">
-        <button class="btn" onclick="showScreen('screen-step1')">Anterior</button>
-        <button class="btn btn-primary" onclick="showScreen('screen-shop')">Finalizar e Ir para Loja -&gt;</button>
+        <div class="btn">Anterior</div>
+        <div class="btn btn-primary">Finalizar e Salvar</div>
       </div>
     </div>
 
@@ -728,24 +721,21 @@
       </div>
 
       <!-- Resumo Estático de Resgate -->
-      <div style="border: 2px solid #000000; padding: 10px; margin-top: 12px; margin-bottom: 60px;">
+      <div style="border: 2px solid #000000; padding: 10px; margin-top: 12px;">
         <div style="font-size: 12px; font-weight: 700; margin-bottom: 4px;">Resgatar Recompensa:</div>
         <div style="font-size: 11px;">Item: Assistir 1 ep. de série</div>
         <div style="font-size: 11px; font-weight: 700; margin-top: 2px;">Saldo: 30 de ouro -&gt; 20 de ouro</div>
       </div>
 
-      <div class="fixed-footer-actions">
-        <button class="btn" onclick="showScreen('screen-step2')">&lt;- Etapa Anterior</button>
-        <button class="btn btn-primary" onclick="showScreen('screen-home')">Voltar ao Início</button>
-      </div>
+      <div class="fab">+</div>
     </div>
 
-    <!-- Barra Inferior Global -->
+    <!-- Barra Inferior Global Estática -->
     <div class="bottom-nav">
-      <div id="nav-home" class="nav-item active" onclick="showScreen('screen-home')">
+      <div id="nav-home" class="nav-item active">
         [Jornada]
       </div>
-      <div id="nav-shop" class="nav-item" onclick="showScreen('screen-shop')">
+      <div id="nav-shop" class="nav-item">
         [Loja]
       </div>
       <div class="nav-item">

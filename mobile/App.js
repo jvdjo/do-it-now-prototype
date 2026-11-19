@@ -33,6 +33,8 @@ import {
   ArrowRight,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   Bell,
   Calendar,
   Repeat,
@@ -55,6 +57,23 @@ import {
 } from 'lucide-react-native';
 
 const STORAGE_KEY = '@do_it_now_state_v2';
+
+const MONTH_NAMES_PT = [
+  'Janeiro',
+  'Fevereiro',
+  'Março',
+  'Abril',
+  'Maio',
+  'Junho',
+  'Julho',
+  'Agosto',
+  'Setembro',
+  'Outubro',
+  'Novembro',
+  'Dezembro',
+];
+
+const CALENDAR_WEEKDAYS_PT = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
 const REPEAT_OPTIONS = [
   'Não repetir',
@@ -95,7 +114,8 @@ const DEFAULT_TASKS = [
     description: 'Lavar pratos, talheres e panelas do almoço',
     repeat: 'Semanalmente',
     repeatDays: ['Seg', 'Qua', 'Sex'],
-    startDate: 'ter, 21/11/2026 12:00',
+    startDate: 'ter, 21/11/2026',
+    startTime: '12:00',
     allDay: false,
     reminders: ['15 min antes'],
     difficulty: 50,
@@ -116,6 +136,7 @@ const DEFAULT_TASKS = [
     repeat: 'Todos os dias',
     repeatDays: [],
     startDate: 'seg, 20/11/2026',
+    startTime: '',
     allDay: true,
     reminders: [],
     difficulty: 25,
@@ -136,6 +157,7 @@ const DEFAULT_TASKS = [
     repeat: 'Semanalmente',
     repeatDays: ['Ter', 'Qui'],
     startDate: 'seg, 20/11/2026',
+    startTime: '',
     allDay: true,
     reminders: [],
     difficulty: 20,
@@ -237,7 +259,14 @@ export default function App() {
   const [formRepeatDays, setFormRepeatDays] = useState(['Seg', 'Qua', 'Sex']);
   const [showRepeatDropdown, setShowRepeatDropdown] = useState(false);
   const [formStartDate, setFormStartDate] = useState('10/11/2026');
+  const [showDatePickerModal, setShowDatePickerModal] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() };
+  });
   const [formAllDay, setFormAllDay] = useState(true);
+  const [formStartTime, setFormStartTime] = useState('');
+  const [formTimeError, setFormTimeError] = useState('');
   const [formReminders, setFormReminders] = useState([]);
   const [newReminderInput, setNewReminderInput] = useState('');
   const [showReminderInput, setShowReminderInput] = useState(false);
@@ -339,7 +368,7 @@ export default function App() {
           const q = searchQuery.toLowerCase();
           const matchTitle = t.title.toLowerCase().includes(q);
           const matchDesc = (t.description || '').toLowerCase().includes(q);
-          const matchDate = (t.startDate || '').toLowerCase().includes(q);
+          const matchDate = `${t.startDate || ''} ${t.startTime || ''}`.toLowerCase().includes(q);
           if (!matchTitle && !matchDesc && !matchDate) return false;
         }
         return true;
@@ -376,6 +405,8 @@ export default function App() {
     const yyyy = today.getFullYear();
     setFormStartDate(`${dd}/${mm}/${yyyy}`);
     setFormAllDay(true);
+    setFormStartTime('');
+    setFormTimeError('');
     setFormReminders([]);
     setShowReminderInput(false);
     setFormDifficulty(25);
@@ -402,8 +433,19 @@ export default function App() {
         : ['Seg', 'Qua', 'Sex']
     );
     setShowRepeatDropdown(false);
-    setFormStartDate(task.startDate || '10/11/2026');
+    const legacyTimeMatch =
+      !task.startTime && !task.allDay && typeof task.startDate === 'string'
+        ? task.startDate.match(/\b([01]\d|2[0-3]):([0-5]\d)\b/)
+        : null;
+    const cleanedDate = legacyTimeMatch
+      ? task.startDate.replace(legacyTimeMatch[0], '').trim()
+      : task.startDate || '10/11/2026';
+    setFormStartDate(cleanedDate);
     setFormAllDay(Boolean(task.allDay));
+    setFormStartTime(
+      task.allDay ? '' : task.startTime || (legacyTimeMatch ? legacyTimeMatch[0] : '')
+    );
+    setFormTimeError('');
     setFormReminders(task.reminders || []);
     setShowReminderInput(false);
     setFormDifficulty(task.difficulty ?? 25);
@@ -431,10 +473,104 @@ export default function App() {
   };
 
   // Actions: Save Task (Create or Update)
+  const parseBRDate = (dateStr) => {
+    if (typeof dateStr === 'string') {
+      const match = dateStr.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+      if (match) {
+        const day = parseInt(match[1], 10);
+        const month = parseInt(match[2], 10) - 1;
+        const year = parseInt(match[3], 10);
+        if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+          return { year, month, day };
+        }
+      }
+    }
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth(), day: now.getDate() };
+  };
+
+  const formatBRDate = (year, month, day) => {
+    const dd = String(day).padStart(2, '0');
+    const mm = String(month + 1).padStart(2, '0');
+    return `${dd}/${mm}/${year}`;
+  };
+
+  const handleOpenDatePicker = () => {
+    const parsed = parseBRDate(formStartDate);
+    setCalendarMonth({ year: parsed.year, month: parsed.month });
+    setShowDatePickerModal(true);
+  };
+
+  const handleChangeCalendarMonth = (delta) => {
+    setCalendarMonth((prev) => {
+      let nextMonth = prev.month + delta;
+      let nextYear = prev.year;
+      if (nextMonth < 0) {
+        nextMonth = 11;
+        nextYear -= 1;
+      } else if (nextMonth > 11) {
+        nextMonth = 0;
+        nextYear += 1;
+      }
+      return { year: nextYear, month: nextMonth };
+    });
+  };
+
+  const handleSelectCalendarDay = (day) => {
+    setFormStartDate(formatBRDate(calendarMonth.year, calendarMonth.month, day));
+    setShowDatePickerModal(false);
+  };
+
+  const handleSelectToday = () => {
+    const now = new Date();
+    setFormStartDate(formatBRDate(now.getFullYear(), now.getMonth(), now.getDate()));
+    setShowDatePickerModal(false);
+  };
+
+  const calendarCells = useMemo(() => {
+    const firstDayOfWeek = new Date(calendarMonth.year, calendarMonth.month, 1).getDay();
+    const daysInMonth = new Date(calendarMonth.year, calendarMonth.month + 1, 0).getDate();
+    const cells = [];
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      cells.push(null);
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      cells.push(d);
+    }
+    while (cells.length % 7 !== 0) {
+      cells.push(null);
+    }
+    return cells;
+  }, [calendarMonth]);
+
+  const formatTimeInput = (raw) => {
+    const digits = raw.replace(/\D/g, '').slice(0, 4);
+    if (digits.length <= 2) return digits;
+    return `${digits.slice(0, 2)}:${digits.slice(2)}`;
+  };
+
+  const isValidTime = (value) => /^([01]\d|2[0-3]):([0-5]\d)$/.test(value.trim());
+
+  const handleNextStep = () => {
+    if (!formAllDay) {
+      if (!formStartTime.trim()) {
+        setFormTimeError('Escolha um horário específico (ex: 14:30).');
+        return;
+      }
+      if (!isValidTime(formStartTime)) {
+        setFormTimeError('Horário inválido. Use o formato HH:MM (ex: 09:00).');
+        return;
+      }
+    }
+    setFormTimeError('');
+    setCurrentScreen('step2');
+  };
+
   const handleSaveTask = () => {
     const finalTitle = formTitle.trim() || 'Nova Tarefa';
     const { xp, gold } = computedFormRewards;
     const savedRepeatDays = formRepeat === 'Semanalmente' ? formRepeatDays : [];
+    const savedStartTime = formAllDay ? '' : formStartTime.trim();
 
     if (editingTaskId) {
       setTasks((prev) =>
@@ -447,6 +583,7 @@ export default function App() {
                 repeat: formRepeat,
                 repeatDays: savedRepeatDays,
                 startDate: formStartDate.trim() || 'Sem data',
+                startTime: savedStartTime,
                 allDay: formAllDay,
                 reminders: formReminders,
                 difficulty: formDifficulty,
@@ -470,6 +607,7 @@ export default function App() {
         repeat: formRepeat,
         repeatDays: savedRepeatDays,
         startDate: formStartDate.trim() || 'Sem data',
+        startTime: savedStartTime,
         allDay: formAllDay,
         reminders: formReminders,
         difficulty: formDifficulty,
@@ -785,6 +923,7 @@ export default function App() {
                               <Calendar size={12} color="#6366F1" strokeWidth={2} />
                               <Text style={styles.taskDate}>
                                 {task.startDate}
+                                {!task.allDay && task.startTime ? ` • ${task.startTime}` : ''}
                                 {task.repeat && task.repeat !== 'Não repetir'
                                   ? ` • ${task.repeat}${
                                       task.repeat === 'Semanalmente' &&
@@ -1067,22 +1206,34 @@ export default function App() {
                     <Calendar size={13} color="#4F46E5" strokeWidth={2.3} />
                     <Text style={styles.formLabel}>DATA DE INÍCIO</Text>
                   </View>
-                  <View style={styles.inputWithIconWrapper}>
+                  <TouchableOpacity
+                    style={styles.inputWithIconWrapper}
+                    onPress={handleOpenDatePicker}
+                    activeOpacity={0.75}
+                  >
                     <Calendar size={15} color="#4F46E5" strokeWidth={2.2} style={{ marginRight: 8 }} />
-                    <TextInput
-                      style={styles.inputWithIconField}
-                      value={formStartDate}
-                      onChangeText={setFormStartDate}
-                      placeholder="DD/MM/AAAA"
-                      placeholderTextColor="#94A3B8"
-                    />
-                  </View>
+                    <Text
+                      style={[
+                        styles.inputWithIconField,
+                        !formStartDate && { color: '#94A3B8' },
+                      ]}
+                    >
+                      {formStartDate || 'Selecionar data'}
+                    </Text>
+                    <ChevronDown size={16} color="#64748B" strokeWidth={2.2} />
+                  </TouchableOpacity>
                 </View>
 
                 {/* Dia inteiro */}
                 <TouchableOpacity
                   style={styles.toggleRow}
-                  onPress={() => setFormAllDay(!formAllDay)}
+                  onPress={() => {
+                    const nextAllDay = !formAllDay;
+                    setFormAllDay(nextAllDay);
+                    if (nextAllDay) {
+                      setFormTimeError('');
+                    }
+                  }}
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                     <Clock size={16} color="#4F46E5" strokeWidth={2.2} />
@@ -1092,6 +1243,66 @@ export default function App() {
                     {formAllDay && <Check size={15} color="#FFFFFF" strokeWidth={3} />}
                   </View>
                 </TouchableOpacity>
+
+                {/* Horário específico (obrigatório quando não é Dia inteiro) */}
+                {!formAllDay && (
+                  <View style={styles.formGroup}>
+                    <View style={styles.formLabelRow}>
+                      <Clock size={13} color="#4F46E5" strokeWidth={2.3} />
+                      <Text style={styles.formLabel}>HORÁRIO *</Text>
+                    </View>
+                    <View
+                      style={[
+                        styles.inputWithIconWrapper,
+                        formTimeError && styles.inputErrorWrapper,
+                      ]}
+                    >
+                      <Clock size={15} color="#4F46E5" strokeWidth={2.2} style={{ marginRight: 8 }} />
+                      <TextInput
+                        style={styles.inputWithIconField}
+                        value={formStartTime}
+                        onChangeText={(text) => {
+                          setFormStartTime(formatTimeInput(text));
+                          if (formTimeError) setFormTimeError('');
+                        }}
+                        placeholder="HH:MM (ex: 14:30)"
+                        placeholderTextColor="#94A3B8"
+                        keyboardType="number-pad"
+                        maxLength={5}
+                      />
+                    </View>
+                    <View style={styles.quickTimeRow}>
+                      {['08:00', '12:00', '18:00', '21:00'].map((preset) => {
+                        const isActive = formStartTime === preset;
+                        return (
+                          <TouchableOpacity
+                            key={preset}
+                            style={[
+                              styles.quickTimeChip,
+                              isActive && styles.quickTimeChipActive,
+                            ]}
+                            onPress={() => {
+                              setFormStartTime(preset);
+                              if (formTimeError) setFormTimeError('');
+                            }}
+                          >
+                            <Text
+                              style={[
+                                styles.quickTimeChipText,
+                                isActive && styles.quickTimeChipTextActive,
+                              ]}
+                            >
+                              {preset}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                    {!!formTimeError && (
+                      <Text style={styles.formErrorText}>{formTimeError}</Text>
+                    )}
+                  </View>
+                )}
 
                 {/* Lembretes */}
                 {formReminders.length > 0 && (
@@ -1161,7 +1372,7 @@ export default function App() {
 
                 <TouchableOpacity
                   style={[styles.btn, styles.btnPrimary]}
-                  onPress={() => setCurrentScreen('step2')}
+                  onPress={handleNextStep}
                 >
                   <Text style={styles.btnPrimaryText}>Próxima Etapa</Text>
                   <ArrowRight size={15} color="#FFFFFF" strokeWidth={2.5} />
@@ -2144,6 +2355,110 @@ export default function App() {
             </View>
           </View>
         </Modal>
+
+        {/* ==================== MODAL: SELETOR DE DATA (CALENDÁRIO) ==================== */}
+        <Modal
+          visible={showDatePickerModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowDatePickerModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalBox}>
+              <View style={styles.calendarHeader}>
+                <TouchableOpacity
+                  style={styles.calendarNavBtn}
+                  onPress={() => handleChangeCalendarMonth(-1)}
+                >
+                  <ChevronLeft size={18} color="#4F46E5" strokeWidth={2.5} />
+                </TouchableOpacity>
+                <Text style={styles.calendarMonthTitle}>
+                  {MONTH_NAMES_PT[calendarMonth.month]} {calendarMonth.year}
+                </Text>
+                <TouchableOpacity
+                  style={styles.calendarNavBtn}
+                  onPress={() => handleChangeCalendarMonth(1)}
+                >
+                  <ChevronRight size={18} color="#4F46E5" strokeWidth={2.5} />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.calendarWeekdaysRow}>
+                {CALENDAR_WEEKDAYS_PT.map((wd) => (
+                  <Text key={wd} style={styles.calendarWeekdayText}>
+                    {wd}
+                  </Text>
+                ))}
+              </View>
+
+              <View style={styles.calendarGrid}>
+                {(() => {
+                  const selected = parseBRDate(formStartDate);
+                  const now = new Date();
+                  const todayYear = now.getFullYear();
+                  const todayMonth = now.getMonth();
+                  const todayDay = now.getDate();
+
+                  return calendarCells.map((day, idx) => {
+                    if (!day) {
+                      return <View key={`empty_${idx}`} style={styles.calendarDayCell} />;
+                    }
+                    const isSelected =
+                      selected.year === calendarMonth.year &&
+                      selected.month === calendarMonth.month &&
+                      selected.day === day;
+                    const isToday =
+                      todayYear === calendarMonth.year &&
+                      todayMonth === calendarMonth.month &&
+                      todayDay === day;
+
+                    return (
+                      <TouchableOpacity
+                        key={`day_${day}`}
+                        style={styles.calendarDayCell}
+                        onPress={() => handleSelectCalendarDay(day)}
+                      >
+                        <View
+                          style={[
+                            styles.calendarDayCircle,
+                            isToday && !isSelected && styles.calendarDayToday,
+                            isSelected && styles.calendarDaySelected,
+                          ]}
+                        >
+                          <Text
+                            style={[
+                              styles.calendarDayText,
+                              isToday && !isSelected && styles.calendarDayTodayText,
+                              isSelected && styles.calendarDaySelectedText,
+                            ]}
+                          >
+                            {day}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  });
+                })()}
+              </View>
+
+              <View style={styles.modalButtonsRow}>
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={handleSelectToday}
+                >
+                  <Calendar size={14} color="#4F46E5" strokeWidth={2.2} />
+                  <Text style={[styles.btnText, { color: '#4F46E5' }]}>Hoje</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={() => setShowDatePickerModal(false)}
+                >
+                  <Text style={styles.btnText}>Fechar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -2567,6 +2882,117 @@ const styles = StyleSheet.create({
     color: '#0F172A',
     fontSize: 13,
     fontWeight: '600',
+  },
+  inputErrorWrapper: {
+    borderColor: '#DC2626',
+    backgroundColor: '#FEF2F2',
+  },
+  formErrorText: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#DC2626',
+  },
+  quickTimeRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 8,
+  },
+  quickTimeChip: {
+    flex: 1,
+    paddingVertical: 7,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#CBD5E1',
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+  },
+  quickTimeChipActive: {
+    borderColor: '#4F46E5',
+    backgroundColor: '#EEF2FF',
+  },
+  quickTimeChipText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#475569',
+  },
+  quickTimeChipTextActive: {
+    color: '#4338CA',
+  },
+  calendarHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  calendarNavBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  calendarMonthTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  calendarWeekdaysRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  calendarWeekdayText: {
+    width: '14.285%',
+    textAlign: 'center',
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#64748B',
+    textTransform: 'uppercase',
+  },
+  calendarGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 14,
+  },
+  calendarDayCell: {
+    width: '14.285%',
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  calendarDayCircle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  calendarDayToday: {
+    borderWidth: 1.5,
+    borderColor: '#818CF8',
+    backgroundColor: '#EEF2FF',
+  },
+  calendarDaySelected: {
+    backgroundColor: '#4F46E5',
+  },
+  calendarDayText: {
+    fontSize: 13,
+    lineHeight: 16,
+    fontWeight: '700',
+    color: '#1E293B',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+  },
+  calendarDayTodayText: {
+    color: '#4338CA',
+  },
+  calendarDaySelectedText: {
+    color: '#FFFFFF',
+    fontWeight: '800',
   },
   instructionText: {
     fontSize: 11,

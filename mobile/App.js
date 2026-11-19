@@ -64,6 +64,16 @@ const REPEAT_OPTIONS = [
   'Anual',
 ];
 
+const WEEKDAYS = [
+  { id: 'Dom', label: 'D', full: 'Domingo' },
+  { id: 'Seg', label: 'S', full: 'Segunda' },
+  { id: 'Ter', label: 'T', full: 'Terça' },
+  { id: 'Qua', label: 'Q', full: 'Quarta' },
+  { id: 'Qui', label: 'Q', full: 'Quinta' },
+  { id: 'Sex', label: 'S', full: 'Sexta' },
+  { id: 'Sáb', label: 'S', full: 'Sábado' },
+];
+
 const DEFAULT_HERO = {
   name: 'Douglas',
   avatarText: 'Herói',
@@ -84,6 +94,7 @@ const DEFAULT_TASKS = [
     title: 'Lavar a louça',
     description: 'Lavar pratos, talheres e panelas do almoço',
     repeat: 'Semanalmente',
+    repeatDays: ['Seg', 'Qua', 'Sex'],
     startDate: 'ter, 21/11/2026 12:00',
     allDay: false,
     reminders: ['15 min antes'],
@@ -103,6 +114,7 @@ const DEFAULT_TASKS = [
     title: 'Arrumar a cama',
     description: 'Esticar lençol e organizar travesseiros logo ao acordar',
     repeat: 'Todos os dias',
+    repeatDays: [],
     startDate: 'seg, 20/11/2026',
     allDay: true,
     reminders: [],
@@ -122,6 +134,7 @@ const DEFAULT_TASKS = [
     title: 'Jogar lixo fora',
     description: 'Separar recicláveis e levar até a lixeira',
     repeat: 'Semanalmente',
+    repeatDays: ['Ter', 'Qui'],
     startDate: 'seg, 20/11/2026',
     allDay: true,
     reminders: [],
@@ -221,6 +234,7 @@ export default function App() {
   const [formTitle, setFormTitle] = useState('Lavar louça');
   const [formDescription, setFormDescription] = useState('');
   const [formRepeat, setFormRepeat] = useState('Semanalmente');
+  const [formRepeatDays, setFormRepeatDays] = useState(['Seg', 'Qua', 'Sex']);
   const [showRepeatDropdown, setShowRepeatDropdown] = useState(false);
   const [formStartDate, setFormStartDate] = useState('10/11/2026');
   const [formAllDay, setFormAllDay] = useState(true);
@@ -354,6 +368,7 @@ export default function App() {
     setFormTitle('');
     setFormDescription('');
     setFormRepeat('Semanalmente');
+    setFormRepeatDays(['Seg', 'Qua', 'Sex']);
     setShowRepeatDropdown(false);
     const today = new Date();
     const dd = String(today.getDate()).padStart(2, '0');
@@ -381,6 +396,11 @@ export default function App() {
     setFormTitle(task.title);
     setFormDescription(task.description || '');
     setFormRepeat(task.repeat || 'Não repetir');
+    setFormRepeatDays(
+      Array.isArray(task.repeatDays) && task.repeatDays.length > 0
+        ? task.repeatDays
+        : ['Seg', 'Qua', 'Sex']
+    );
     setShowRepeatDropdown(false);
     setFormStartDate(task.startDate || '10/11/2026');
     setFormAllDay(Boolean(task.allDay));
@@ -398,10 +418,23 @@ export default function App() {
     setCurrentScreen('step1');
   };
 
+  const toggleRepeatDay = (dayId) => {
+    setFormRepeatDays((prev) => {
+      if (prev.includes(dayId)) {
+        if (prev.length === 1) return prev; // Keep at least 1 day selected
+        return prev.filter((d) => d !== dayId);
+      }
+      const next = [...prev, dayId];
+      const order = WEEKDAYS.map((w) => w.id);
+      return next.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+    });
+  };
+
   // Actions: Save Task (Create or Update)
   const handleSaveTask = () => {
     const finalTitle = formTitle.trim() || 'Nova Tarefa';
     const { xp, gold } = computedFormRewards;
+    const savedRepeatDays = formRepeat === 'Semanalmente' ? formRepeatDays : [];
 
     if (editingTaskId) {
       setTasks((prev) =>
@@ -412,6 +445,7 @@ export default function App() {
                 title: finalTitle,
                 description: formDescription.trim(),
                 repeat: formRepeat,
+                repeatDays: savedRepeatDays,
                 startDate: formStartDate.trim() || 'Sem data',
                 allDay: formAllDay,
                 reminders: formReminders,
@@ -434,6 +468,7 @@ export default function App() {
         title: finalTitle,
         description: formDescription.trim(),
         repeat: formRepeat,
+        repeatDays: savedRepeatDays,
         startDate: formStartDate.trim() || 'Sem data',
         allDay: formAllDay,
         reminders: formReminders,
@@ -751,7 +786,13 @@ export default function App() {
                               <Text style={styles.taskDate}>
                                 {task.startDate}
                                 {task.repeat && task.repeat !== 'Não repetir'
-                                  ? ` • ${task.repeat}`
+                                  ? ` • ${task.repeat}${
+                                      task.repeat === 'Semanalmente' &&
+                                      Array.isArray(task.repeatDays) &&
+                                      task.repeatDays.length > 0
+                                        ? ` (${task.repeatDays.join(', ')})`
+                                        : ''
+                                    }`
                                   : ''}
                               </Text>
                             </View>
@@ -984,6 +1025,38 @@ export default function App() {
                           </TouchableOpacity>
                         );
                       })}
+                    </View>
+                  )}
+
+                  {formRepeat === 'Semanalmente' && (
+                    <View style={styles.weekdaysBox}>
+                      <Text style={styles.weekdaysTitle}>
+                        DIAS DA SEMANA ({formRepeatDays.join(', ')})
+                      </Text>
+                      <View style={styles.weekdaysRow}>
+                        {WEEKDAYS.map((day) => {
+                          const isDaySelected = formRepeatDays.includes(day.id);
+                          return (
+                            <TouchableOpacity
+                              key={day.id}
+                              style={[
+                                styles.weekdayBtn,
+                                isDaySelected && styles.weekdayBtnActive,
+                              ]}
+                              onPress={() => toggleRepeatDay(day.id)}
+                            >
+                              <Text
+                                style={[
+                                  styles.weekdayBtnText,
+                                  isDaySelected && styles.weekdayBtnTextActive,
+                                ]}
+                              >
+                                {day.id}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
                     </View>
                   )}
                 </View>
@@ -2547,6 +2620,48 @@ const styles = StyleSheet.create({
   dropdownItemTextSelected: {
     color: '#FFFFFF',
     fontWeight: '700',
+  },
+  weekdaysBox: {
+    marginTop: 10,
+    padding: 12,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#C7D2FE',
+    backgroundColor: '#EEF2FF',
+  },
+  weekdaysTitle: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#3730A3',
+    marginBottom: 8,
+    letterSpacing: 0.3,
+  },
+  weekdaysRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 4,
+  },
+  weekdayBtn: {
+    flex: 1,
+    paddingVertical: 9,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: '#6366F1',
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  weekdayBtnActive: {
+    backgroundColor: '#4F46E5',
+    borderColor: '#4338CA',
+  },
+  weekdayBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#4F46E5',
+  },
+  weekdayBtnTextActive: {
+    color: '#FFFFFF',
   },
   toggleRow: {
     flexDirection: 'row',

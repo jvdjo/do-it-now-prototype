@@ -596,16 +596,16 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeArea}>
-        <StatusBar style="dark" backgroundColor="#FFFFFF" />
+        <StatusBar style="dark" backgroundColor="#F8FAFC" />
 
         {/* Main Frame Container */}
         <View style={styles.appFrame}>
           {/* Feedback Notification Toast */}
           {feedbackBanner && (
             <TouchableOpacity style={styles.feedbackToast} onPress={() => setFeedbackBanner(null)}>
-              <CheckCircle2 size={16} color="#FFFFFF" strokeWidth={2.5} />
+              <CheckCircle2 size={16} color="#34D399" strokeWidth={2.5} />
               <Text style={styles.feedbackToastText}>{feedbackBanner}</Text>
-              <X size={16} color="#FFFFFF" strokeWidth={2.5} />
+              <X size={16} color="#94A3B8" strokeWidth={2.5} />
             </TouchableOpacity>
           )}
 
@@ -623,24 +623,24 @@ export default function App() {
                   onPress={() => setCurrentScreen('menu')}
                 >
                   <View style={styles.heroAvatar}>
-                    <User size={26} color="#000000" strokeWidth={2.2} />
+                    <User size={26} color="#4F46E5" strokeWidth={2.2} />
                   </View>
                   <View style={styles.heroInfo}>
                     <Text style={styles.heroName}>{hero.name}</Text>
                     <View style={styles.heroStats}>
                       <View style={styles.statBadge}>
-                        <Shield size={13} color="#000000" strokeWidth={2.2} />
-                        <Text style={styles.heroStatText}>Nível {hero.level}</Text>
+                        <Shield size={13} color="#4F46E5" strokeWidth={2.2} />
+                        <Text style={[styles.heroStatText, { color: '#4338CA' }]}>Nível {hero.level}</Text>
                       </View>
                       <Text style={styles.heroStatDivider}>•</Text>
                       <View style={styles.statBadge}>
-                        <Coins size={13} color="#000000" strokeWidth={2.2} />
-                        <Text style={styles.heroStatText}>{hero.gold}</Text>
+                        <Coins size={13} color="#D97706" strokeWidth={2.2} />
+                        <Text style={[styles.heroStatText, { color: '#B45309' }]}>{hero.gold}</Text>
                       </View>
                       <Text style={styles.heroStatDivider}>•</Text>
                       <View style={styles.statBadge}>
-                        <XpIcon size={13} color="#000000" />
-                        <Text style={styles.heroStatText}>{formatNumberBR(hero.xp)}</Text>
+                        <XpIcon size={13} color="#0284C7" bgColor="#E0F2FE" />
+                        <Text style={[styles.heroStatText, { color: '#0369A1' }]}>{formatNumberBR(hero.xp)}</Text>
                       </View>
                     </View>
                   </View>
@@ -651,17 +651,17 @@ export default function App() {
 
                 {/* Search Box */}
                 <View style={styles.searchBoxWrapper}>
-                  <Search size={17} color="#000000" strokeWidth={2.2} style={{ marginRight: 8 }} />
+                  <Search size={17} color="#6366F1" strokeWidth={2.2} style={{ marginRight: 8 }} />
                   <TextInput
                     style={styles.searchInput}
                     placeholder="Pesquisar tarefa..."
-                    placeholderTextColor="#737373"
+                    placeholderTextColor="#94A3B8"
                     value={searchQuery}
                     onChangeText={setSearchQuery}
                   />
                   {searchQuery.length > 0 && (
                     <TouchableOpacity onPress={() => setSearchQuery('')} style={{ padding: 4 }}>
-                      <X size={17} color="#000000" strokeWidth={2.2} />
+                      <X size={17} color="#64748B" strokeWidth={2.2} />
                     </TouchableOpacity>
                   )}
                 </View>
@@ -677,7 +677,7 @@ export default function App() {
                   >
                     <SlidersHorizontal
                       size={15}
-                      color={statusFilter !== 'pending' ? '#FFFFFF' : '#000000'}
+                      color={statusFilter !== 'pending' ? '#FFFFFF' : '#4F46E5'}
                       strokeWidth={2.2}
                     />
                     <Text
@@ -700,7 +700,7 @@ export default function App() {
                     style={styles.pillBtn}
                     onPress={() => setShowSortModal(true)}
                   >
-                    <ArrowUpDown size={15} color="#000000" strokeWidth={2.2} />
+                    <ArrowUpDown size={15} color="#4F46E5" strokeWidth={2.2} />
                     <Text style={styles.pillBtnText}>
                       {sortBy === 'recent'
                         ? 'Ordenação'
@@ -716,7 +716,7 @@ export default function App() {
                 {/* Task List */}
                 {filteredTasks.length === 0 ? (
                   <View style={styles.emptyBox}>
-                    <CheckCircle2 size={24} color="#000000" strokeWidth={2} style={{ marginBottom: 8 }} />
+                    <CheckCircle2 size={24} color="#6366F1" strokeWidth={2} style={{ marginBottom: 8 }} />
                     <Text style={styles.emptyBoxTitle}>Nenhuma tarefa encontrada</Text>
                     <Text style={styles.emptyBoxSub}>
                       Toque no botão + para cadastrar uma nova tarefa ou altere o filtro atual.
@@ -747,7 +747,7 @@ export default function App() {
                               {task.title}
                             </Text>
                             <View style={styles.taskDateRow}>
-                              <Calendar size={12} color="#525252" strokeWidth={2} />
+                              <Calendar size={12} color="#6366F1" strokeWidth={2} />
                               <Text style={styles.taskDate}>
                                 {task.startDate}
                                 {task.repeat && task.repeat !== 'Não repetir'
@@ -756,23 +756,23 @@ export default function App() {
                               </Text>
                             </View>
                             <View style={styles.taskRewardsBadgeRow}>
-                              <View style={styles.miniTag}>
-                                <Coins size={11} color="#000000" strokeWidth={2.2} />
-                                <Text style={styles.miniTagText}>+{task.goldReward}</Text>
+                              <View style={[styles.miniTag, styles.miniTagGold]}>
+                                <Coins size={11} color="#D97706" strokeWidth={2.2} />
+                                <Text style={[styles.miniTagText, { color: '#B45309' }]}>+{task.goldReward}</Text>
                               </View>
-                              <View style={styles.miniTag}>
-                                <XpIcon size={11} color="#000000" />
-                                <Text style={styles.miniTagText}>
+                              <View style={[styles.miniTag, styles.miniTagXp]}>
+                                <XpIcon size={11} color="#0284C7" bgColor="#E0F2FE" />
+                                <Text style={[styles.miniTagText, { color: '#0369A1' }]}>
                                   +{formatNumberBR(task.xpReward)}
                                 </Text>
                               </View>
                               {isFailed && (
-                                <View style={[styles.miniTag, styles.miniTagInverted]}>
+                                <View style={[styles.miniTag, styles.miniTagDanger]}>
                                   <Text style={styles.miniTagTextInverted}>FALHOU</Text>
                                 </View>
                               )}
                               {isCompleted && (
-                                <View style={[styles.miniTag, styles.miniTagInverted]}>
+                                <View style={[styles.miniTag, styles.miniTagSuccess]}>
                                   <Text style={styles.miniTagTextInverted}>CONCLUÍDA</Text>
                                 </View>
                               )}
@@ -784,6 +784,7 @@ export default function App() {
                               style={[
                                 styles.checkBox,
                                 isCompleted && styles.checkBoxChecked,
+                                isFailed && styles.checkBoxFailed,
                               ]}
                               onPress={() => {
                                 if (isCompleted || isFailed) {
@@ -796,9 +797,9 @@ export default function App() {
                               {isCompleted ? (
                                 <Check size={16} color="#FFFFFF" strokeWidth={3} />
                               ) : isFailed ? (
-                                <AlertTriangle size={14} color="#000000" strokeWidth={2.5} />
+                                <AlertTriangle size={14} color="#DC2626" strokeWidth={2.5} />
                               ) : (
-                                <Check size={16} color="#000000" strokeWidth={2.5} />
+                                <Check size={16} color="#10B981" strokeWidth={2.5} />
                               )}
                             </TouchableOpacity>
 
@@ -813,7 +814,7 @@ export default function App() {
                             >
                               <MoreVertical
                                 size={18}
-                                color={isMenuOpen ? '#FFFFFF' : '#000000'}
+                                color={isMenuOpen ? '#FFFFFF' : '#475569'}
                                 strokeWidth={2.2}
                               />
                             </TouchableOpacity>
@@ -827,8 +828,8 @@ export default function App() {
                               style={styles.contextMenuItem}
                               onPress={() => handleEditTask(task)}
                             >
-                              <Edit3 size={14} color="#000000" strokeWidth={2.2} />
-                              <Text style={styles.contextMenuText}>Editar</Text>
+                              <Edit3 size={14} color="#4F46E5" strokeWidth={2.2} />
+                              <Text style={[styles.contextMenuText, { color: '#4F46E5' }]}>Editar</Text>
                             </TouchableOpacity>
 
                             {task.status === 'pending' ? (
@@ -838,16 +839,16 @@ export default function App() {
                                   setConfirmTaskModal({ task, action: 'fail' })
                                 }
                               >
-                                <XCircle size={14} color="#000000" strokeWidth={2.2} />
-                                <Text style={styles.contextMenuText}>Falhar</Text>
+                                <XCircle size={14} color="#EA580C" strokeWidth={2.2} />
+                                <Text style={[styles.contextMenuText, { color: '#EA580C' }]}>Falhar</Text>
                               </TouchableOpacity>
                             ) : (
                               <TouchableOpacity
                                 style={styles.contextMenuItem}
                                 onPress={() => handleReopenTask(task)}
                               >
-                                <RotateCcw size={14} color="#000000" strokeWidth={2.2} />
-                                <Text style={styles.contextMenuText}>Reabrir</Text>
+                                <RotateCcw size={14} color="#0284C7" strokeWidth={2.2} />
+                                <Text style={[styles.contextMenuText, { color: '#0284C7' }]}>Reabrir</Text>
                               </TouchableOpacity>
                             )}
 
@@ -857,8 +858,8 @@ export default function App() {
                                 setConfirmTaskModal({ task, action: 'delete' })
                               }
                             >
-                              <Trash2 size={14} color="#000000" strokeWidth={2.2} />
-                              <Text style={styles.contextMenuText}>Excluir</Text>
+                              <Trash2 size={14} color="#DC2626" strokeWidth={2.2} />
+                              <Text style={[styles.contextMenuText, { color: '#DC2626' }]}>Excluir</Text>
                             </TouchableOpacity>
                           </View>
                         )}
@@ -891,7 +892,7 @@ export default function App() {
                     style={styles.backLink}
                     onPress={() => setCurrentScreen('home')}
                   >
-                    <ArrowLeft size={17} color="#000000" strokeWidth={2.5} />
+                    <ArrowLeft size={17} color="#4F46E5" strokeWidth={2.5} />
                   </TouchableOpacity>
                   <Text style={styles.pageHeaderTitle}>
                     {editingTaskId ? 'Editar Tarefa (1/2)' : 'Nova Tarefa (1/2)'}
@@ -901,7 +902,7 @@ export default function App() {
                 {/* Título */}
                 <View style={styles.formGroup}>
                   <View style={styles.formLabelRow}>
-                    <FileText size={13} color="#000000" strokeWidth={2.3} />
+                    <FileText size={13} color="#4F46E5" strokeWidth={2.3} />
                     <Text style={styles.formLabel}>TÍTULO</Text>
                   </View>
                   <TextInput
@@ -909,14 +910,14 @@ export default function App() {
                     value={formTitle}
                     onChangeText={setFormTitle}
                     placeholder="Ex: Lavar louça"
-                    placeholderTextColor="#737373"
+                    placeholderTextColor="#94A3B8"
                   />
                 </View>
 
                 {/* Descrição */}
                 <View style={styles.formGroup}>
                   <View style={styles.formLabelRow}>
-                    <AlignLeft size={13} color="#000000" strokeWidth={2.3} />
+                    <AlignLeft size={13} color="#4F46E5" strokeWidth={2.3} />
                     <Text style={styles.formLabel}>DESCRIÇÃO</Text>
                   </View>
                   <TextInput
@@ -924,14 +925,14 @@ export default function App() {
                     value={formDescription}
                     onChangeText={setFormDescription}
                     placeholder="Detalhes opcionais..."
-                    placeholderTextColor="#737373"
+                    placeholderTextColor="#94A3B8"
                   />
                 </View>
 
                 {/* Repetição */}
                 <View style={styles.formGroup}>
                   <View style={styles.formLabelRow}>
-                    <Repeat size={13} color="#000000" strokeWidth={2.3} />
+                    <Repeat size={13} color="#4F46E5" strokeWidth={2.3} />
                     <Text style={styles.formLabel}>REPETIÇÃO</Text>
                   </View>
                   <Text style={styles.instructionText}>
@@ -942,13 +943,13 @@ export default function App() {
                     onPress={() => setShowRepeatDropdown(!showRepeatDropdown)}
                   >
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                      <Repeat size={15} color="#000000" strokeWidth={2.2} />
+                      <Repeat size={15} color="#4F46E5" strokeWidth={2.2} />
                       <Text style={styles.dropdownTriggerText}>{formRepeat}</Text>
                     </View>
                     {showRepeatDropdown ? (
-                      <ChevronUp size={18} color="#000000" strokeWidth={2.5} />
+                      <ChevronUp size={18} color="#4F46E5" strokeWidth={2.5} />
                     ) : (
-                      <ChevronDown size={18} color="#000000" strokeWidth={2.5} />
+                      <ChevronDown size={18} color="#4F46E5" strokeWidth={2.5} />
                     )}
                   </TouchableOpacity>
 
@@ -990,17 +991,17 @@ export default function App() {
                 {/* Data de Início */}
                 <View style={styles.formGroup}>
                   <View style={styles.formLabelRow}>
-                    <Calendar size={13} color="#000000" strokeWidth={2.3} />
+                    <Calendar size={13} color="#4F46E5" strokeWidth={2.3} />
                     <Text style={styles.formLabel}>DATA DE INÍCIO</Text>
                   </View>
                   <View style={styles.inputWithIconWrapper}>
-                    <Calendar size={15} color="#000000" strokeWidth={2.2} style={{ marginRight: 8 }} />
+                    <Calendar size={15} color="#4F46E5" strokeWidth={2.2} style={{ marginRight: 8 }} />
                     <TextInput
                       style={styles.inputWithIconField}
                       value={formStartDate}
                       onChangeText={setFormStartDate}
                       placeholder="DD/MM/AAAA"
-                      placeholderTextColor="#737373"
+                      placeholderTextColor="#94A3B8"
                     />
                   </View>
                 </View>
@@ -1011,7 +1012,7 @@ export default function App() {
                   onPress={() => setFormAllDay(!formAllDay)}
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <Clock size={16} color="#000000" strokeWidth={2.2} />
+                    <Clock size={16} color="#4F46E5" strokeWidth={2.2} />
                     <Text style={styles.toggleRowLabel}>Dia inteiro</Text>
                   </View>
                   <View style={[styles.checkBox, formAllDay && styles.checkBoxChecked]}>
@@ -1025,7 +1026,7 @@ export default function App() {
                     {formReminders.map((rem, index) => (
                       <View key={`${rem}_${index}`} style={styles.reminderChip}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                          <Bell size={13} color="#000000" strokeWidth={2.2} />
+                          <Bell size={13} color="#D97706" strokeWidth={2.2} />
                           <Text style={styles.reminderChipText}>{rem}</Text>
                         </View>
                         <TouchableOpacity
@@ -1035,7 +1036,7 @@ export default function App() {
                             )
                           }
                         >
-                          <X size={15} color="#000000" strokeWidth={2.5} />
+                          <X size={15} color="#DC2626" strokeWidth={2.5} />
                         </TouchableOpacity>
                       </View>
                     ))}
@@ -1049,7 +1050,7 @@ export default function App() {
                       value={newReminderInput}
                       onChangeText={setNewReminderInput}
                       placeholder="Ex: 30 min antes, 08:00..."
-                      placeholderTextColor="#737373"
+                      placeholderTextColor="#94A3B8"
                     />
                     <TouchableOpacity
                       style={[styles.btn, styles.btnPrimary, { flex: 0, paddingHorizontal: 16 }]}
@@ -1069,7 +1070,7 @@ export default function App() {
                     style={[styles.pillBtn, { width: '100%', marginTop: 8 }]}
                     onPress={() => setShowReminderInput(true)}
                   >
-                    <Bell size={15} color="#000000" strokeWidth={2.2} />
+                    <Bell size={15} color="#D97706" strokeWidth={2.2} />
                     <Text style={styles.pillBtnText}>Adicionar lembrete</Text>
                   </TouchableOpacity>
                 )}
@@ -1081,7 +1082,7 @@ export default function App() {
                   style={styles.btn}
                   onPress={() => setCurrentScreen('home')}
                 >
-                  <X size={15} color="#000000" strokeWidth={2.5} />
+                  <X size={15} color="#475569" strokeWidth={2.5} />
                   <Text style={styles.btnText}>Cancelar</Text>
                 </TouchableOpacity>
 
@@ -1108,26 +1109,26 @@ export default function App() {
                     style={styles.backLink}
                     onPress={() => setCurrentScreen('step1')}
                   >
-                    <ArrowLeft size={17} color="#000000" strokeWidth={2.5} />
+                    <ArrowLeft size={17} color="#4F46E5" strokeWidth={2.5} />
                   </TouchableOpacity>
                   <Text style={styles.pageHeaderTitle}>Elementos de RPG (2/2)</Text>
                 </View>
 
                 {/* Slider Dificuldade */}
-                <View style={styles.sliderContainer}>
+                <View style={[styles.sliderContainer, { borderColor: '#FDBA74', backgroundColor: '#FFF7ED' }]}>
                   <View style={styles.sliderHeader}>
                     <View style={styles.sliderTitleRow}>
-                      <Flame size={15} color="#000000" strokeWidth={2.2} />
-                      <Text style={styles.sliderHeaderText}>Dificuldade</Text>
+                      <Flame size={15} color="#EA580C" strokeWidth={2.2} />
+                      <Text style={[styles.sliderHeaderText, { color: '#9A3412' }]}>Dificuldade</Text>
                     </View>
-                    <Text style={styles.sliderHeaderText}>{formDifficulty}%</Text>
+                    <Text style={[styles.sliderHeaderText, { color: '#EA580C' }]}>{formDifficulty}%</Text>
                   </View>
                   <View style={styles.customSliderBarWrapper}>
-                    <View style={styles.staticSliderTrack}>
+                    <View style={[styles.staticSliderTrack, { borderColor: '#EA580C', backgroundColor: '#FFEDD5' }]}>
                       <View
                         style={[
                           styles.staticSliderFill,
-                          { width: `${formDifficulty}%` },
+                          { width: `${formDifficulty}%`, backgroundColor: '#EA580C' },
                         ]}
                       />
                     </View>
@@ -1138,9 +1139,9 @@ export default function App() {
                       step={1}
                       value={formDifficulty}
                       onValueChange={setFormDifficulty}
-                      minimumTrackTintColor="#000000"
-                      maximumTrackTintColor="#D4D4D4"
-                      thumbTintColor="#000000"
+                      minimumTrackTintColor="#EA580C"
+                      maximumTrackTintColor="#FED7AA"
+                      thumbTintColor="#EA580C"
                     />
                   </View>
                   <View style={styles.sliderLabels}>
@@ -1151,20 +1152,20 @@ export default function App() {
                 </View>
 
                 {/* Slider Importância */}
-                <View style={styles.sliderContainer}>
+                <View style={[styles.sliderContainer, { borderColor: '#FDE047', backgroundColor: '#FEFCE8' }]}>
                   <View style={styles.sliderHeader}>
                     <View style={styles.sliderTitleRow}>
-                      <Star size={15} color="#000000" strokeWidth={2.2} />
-                      <Text style={styles.sliderHeaderText}>Importância</Text>
+                      <Star size={15} color="#D97706" strokeWidth={2.2} />
+                      <Text style={[styles.sliderHeaderText, { color: '#92400E' }]}>Importância</Text>
                     </View>
-                    <Text style={styles.sliderHeaderText}>{formImportance}%</Text>
+                    <Text style={[styles.sliderHeaderText, { color: '#D97706' }]}>{formImportance}%</Text>
                   </View>
                   <View style={styles.customSliderBarWrapper}>
-                    <View style={styles.staticSliderTrack}>
+                    <View style={[styles.staticSliderTrack, { borderColor: '#D97706', backgroundColor: '#FEF3C7' }]}>
                       <View
                         style={[
                           styles.staticSliderFill,
-                          { width: `${formImportance}%` },
+                          { width: `${formImportance}%`, backgroundColor: '#D97706' },
                         ]}
                       />
                     </View>
@@ -1175,9 +1176,9 @@ export default function App() {
                       step={1}
                       value={formImportance}
                       onValueChange={setFormImportance}
-                      minimumTrackTintColor="#000000"
-                      maximumTrackTintColor="#D4D4D4"
-                      thumbTintColor="#000000"
+                      minimumTrackTintColor="#D97706"
+                      maximumTrackTintColor="#FDE68A"
+                      thumbTintColor="#D97706"
                     />
                   </View>
                   <View style={styles.sliderLabels}>
@@ -1188,20 +1189,20 @@ export default function App() {
                 </View>
 
                 {/* Slider Medo */}
-                <View style={styles.sliderContainer}>
+                <View style={[styles.sliderContainer, { borderColor: '#D8B4FE', backgroundColor: '#FAF5FF' }]}>
                   <View style={styles.sliderHeader}>
                     <View style={styles.sliderTitleRow}>
-                      <Skull size={15} color="#000000" strokeWidth={2.2} />
-                      <Text style={styles.sliderHeaderText}>Medo</Text>
+                      <Skull size={15} color="#9333EA" strokeWidth={2.2} />
+                      <Text style={[styles.sliderHeaderText, { color: '#6B21A8' }]}>Medo</Text>
                     </View>
-                    <Text style={styles.sliderHeaderText}>{formFear}%</Text>
+                    <Text style={[styles.sliderHeaderText, { color: '#9333EA' }]}>{formFear}%</Text>
                   </View>
                   <View style={styles.customSliderBarWrapper}>
-                    <View style={styles.staticSliderTrack}>
+                    <View style={[styles.staticSliderTrack, { borderColor: '#9333EA', backgroundColor: '#F3E8FF' }]}>
                       <View
                         style={[
                           styles.staticSliderFill,
-                          { width: `${formFear}%` },
+                          { width: `${formFear}%`, backgroundColor: '#9333EA' },
                         ]}
                       />
                     </View>
@@ -1212,9 +1213,9 @@ export default function App() {
                       step={1}
                       value={formFear}
                       onValueChange={setFormFear}
-                      minimumTrackTintColor="#000000"
-                      maximumTrackTintColor="#D4D4D4"
-                      thumbTintColor="#000000"
+                      minimumTrackTintColor="#9333EA"
+                      maximumTrackTintColor="#E9D5FF"
+                      thumbTintColor="#9333EA"
                     />
                   </View>
                   <View style={styles.sliderLabels}>
@@ -1231,7 +1232,7 @@ export default function App() {
                     onPress={() => setFormLinkExpGold(!formLinkExpGold)}
                   >
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                      <Link size={15} color="#000000" strokeWidth={2.2} />
+                      <Link size={15} color="#4F46E5" strokeWidth={2.2} />
                       <Text style={styles.rpgRewardTitle}>Vincular EXP e Ouro</Text>
                     </View>
                     <View
@@ -1249,14 +1250,14 @@ export default function App() {
                   {formLinkExpGold ? (
                     <View style={{ gap: 6, marginTop: 4 }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <XpIcon size={13} color="#000000" />
-                        <Text style={styles.rpgRewardLine}>
+                        <XpIcon size={13} color="#0284C7" bgColor="#E0F2FE" />
+                        <Text style={[styles.rpgRewardLine, { color: '#0369A1' }]}>
                           + {formatNumberBR(computedFormRewards.xp)} XP
                         </Text>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <Coins size={14} color="#000000" strokeWidth={2.2} />
-                        <Text style={styles.rpgRewardLine}>
+                        <Coins size={14} color="#D97706" strokeWidth={2.2} />
+                        <Text style={[styles.rpgRewardLine, { color: '#B45309' }]}>
                           Recompensa: {computedFormRewards.gold} de ouro
                         </Text>
                       </View>
@@ -1287,7 +1288,7 @@ export default function App() {
 
                 {/* Penalidade de falha */}
                 <View style={styles.penaltyBox}>
-                  <AlertTriangle size={15} color="#000000" strokeWidth={2.2} />
+                  <AlertTriangle size={15} color="#DC2626" strokeWidth={2.2} />
                   <Text style={styles.penaltyText}>
                     Penalidade de falha: {formatNumberBR(computedFormRewards.xp)} XP e{' '}
                     {computedFormRewards.gold} de ouro perdidos ao falhar.
@@ -1296,18 +1297,18 @@ export default function App() {
 
                 {/* Aumentar Habilidade */}
                 <TouchableOpacity
-                  style={[styles.pillBtn, { width: '100%', marginBottom: 8, justifyContent: 'space-between', paddingHorizontal: 14 }]}
+                  style={[styles.pillBtn, { width: '100%', marginBottom: 8, justifyContent: 'space-between', paddingHorizontal: 14, borderColor: '#10B981', backgroundColor: '#ECFDF5' }]}
                   onPress={() =>
                     setShowIncreaseSkillDropdown(!showIncreaseSkillDropdown)
                   }
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <TrendingUp size={15} color="#000000" strokeWidth={2.2} />
-                    <Text style={styles.pillBtnText}>
+                    <TrendingUp size={15} color="#059669" strokeWidth={2.2} />
+                    <Text style={[styles.pillBtnText, { color: '#065F46' }]}>
                       Aumentar Habilidade: {formIncreaseSkill}
                     </Text>
                   </View>
-                  <ChevronDown size={16} color="#000000" strokeWidth={2.2} />
+                  <ChevronDown size={16} color="#059669" strokeWidth={2.2} />
                 </TouchableOpacity>
                 {showIncreaseSkillDropdown && (
                   <View style={[styles.dropdownList, { marginBottom: 10 }]}>
@@ -1342,18 +1343,18 @@ export default function App() {
 
                 {/* Diminuir Habilidade */}
                 <TouchableOpacity
-                  style={[styles.pillBtn, { width: '100%', marginBottom: 12, justifyContent: 'space-between', paddingHorizontal: 14 }]}
+                  style={[styles.pillBtn, { width: '100%', marginBottom: 12, justifyContent: 'space-between', paddingHorizontal: 14, borderColor: '#F43F5E', backgroundColor: '#FFF1F2' }]}
                   onPress={() =>
                     setShowDecreaseSkillDropdown(!showDecreaseSkillDropdown)
                   }
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <TrendingDown size={15} color="#000000" strokeWidth={2.2} />
-                    <Text style={styles.pillBtnText}>
+                    <TrendingDown size={15} color="#E11D48" strokeWidth={2.2} />
+                    <Text style={[styles.pillBtnText, { color: '#9F1239' }]}>
                       Diminuir Habilidade: {formDecreaseSkill}
                     </Text>
                   </View>
-                  <ChevronDown size={16} color="#000000" strokeWidth={2.2} />
+                  <ChevronDown size={16} color="#E11D48" strokeWidth={2.2} />
                 </TouchableOpacity>
                 {showDecreaseSkillDropdown && (
                   <View style={[styles.dropdownList, { marginBottom: 10 }]}>
@@ -1393,12 +1394,12 @@ export default function App() {
                   style={styles.btn}
                   onPress={() => setCurrentScreen('step1')}
                 >
-                  <ArrowLeft size={15} color="#000000" strokeWidth={2.5} />
+                  <ArrowLeft size={15} color="#475569" strokeWidth={2.5} />
                   <Text style={styles.btnText}>Anterior</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.btn, styles.btnPrimary]}
+                  style={[styles.btn, styles.btnSuccess]}
                   onPress={handleSaveTask}
                 >
                   <Check size={15} color="#FFFFFF" strokeWidth={2.8} />
@@ -1417,7 +1418,7 @@ export default function App() {
               >
                 <View style={[styles.pageHeader, { justifyContent: 'space-between' }]}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <ShoppingBag size={18} color="#000000" strokeWidth={2.5} />
+                    <ShoppingBag size={18} color="#D97706" strokeWidth={2.5} />
                     <Text style={styles.pageHeaderTitle}>Loja de Recompensas</Text>
                   </View>
                   <View style={{ flexDirection: 'row', gap: 8 }}>
@@ -1427,7 +1428,7 @@ export default function App() {
                     >
                       <Search
                         size={14}
-                        color={showShopSearch ? '#FFFFFF' : '#000000'}
+                        color={showShopSearch ? '#FFFFFF' : '#4F46E5'}
                         strokeWidth={2.2}
                       />
                     </TouchableOpacity>
@@ -1435,7 +1436,7 @@ export default function App() {
                       style={styles.headerActionTag}
                       onPress={() => setShopSortAsc(!shopSortAsc)}
                     >
-                      <ArrowUpDown size={14} color="#000000" strokeWidth={2.2} />
+                      <ArrowUpDown size={14} color="#4F46E5" strokeWidth={2.2} />
                       <Text style={styles.headerActionTagText}>
                         {shopSortAsc ? 'Menor' : 'Maior'}
                       </Text>
@@ -1445,17 +1446,17 @@ export default function App() {
 
                 {showShopSearch && (
                   <View style={styles.searchBoxWrapper}>
-                    <Search size={15} color="#000000" strokeWidth={2.2} style={{ marginRight: 8 }} />
+                    <Search size={15} color="#6366F1" strokeWidth={2.2} style={{ marginRight: 8 }} />
                     <TextInput
                       style={styles.searchInput}
                       placeholder="Buscar recompensa..."
-                      placeholderTextColor="#737373"
+                      placeholderTextColor="#94A3B8"
                       value={shopSearch}
                       onChangeText={setShopSearch}
                     />
                     {shopSearch.length > 0 && (
                       <TouchableOpacity onPress={() => setShopSearch('')}>
-                        <X size={16} color="#000000" strokeWidth={2.2} />
+                        <X size={16} color="#64748B" strokeWidth={2.2} />
                       </TouchableOpacity>
                     )}
                   </View>
@@ -1472,7 +1473,7 @@ export default function App() {
                   >
                     <Gift
                       size={14}
-                      color={shopTab === 'available' ? '#FFFFFF' : '#000000'}
+                      color={shopTab === 'available' ? '#FFFFFF' : '#4F46E5'}
                       strokeWidth={2.2}
                     />
                     <Text
@@ -1494,7 +1495,7 @@ export default function App() {
                   >
                     <CheckCircle2
                       size={14}
-                      color={shopTab === 'redeemed' ? '#FFFFFF' : '#000000'}
+                      color={shopTab === 'redeemed' ? '#FFFFFF' : '#4F46E5'}
                       strokeWidth={2.2}
                     />
                     <Text
@@ -1510,7 +1511,7 @@ export default function App() {
 
                 {/* Saldo Total */}
                 <View style={styles.shopBalanceBox}>
-                  <Coins size={17} color="#000000" strokeWidth={2.2} />
+                  <Coins size={18} color="#D97706" strokeWidth={2.4} />
                   <Text style={styles.shopBalanceText}>
                     Saldo Total: {hero.gold} de ouro
                   </Text>
@@ -1528,7 +1529,7 @@ export default function App() {
                         >
                           <View style={styles.shopItemLeft}>
                             <View style={styles.shopItemIconCircle}>
-                              <Gift size={16} color="#000000" strokeWidth={2.2} />
+                              <Gift size={16} color="#7C3AED" strokeWidth={2.2} />
                             </View>
                             <Text style={styles.shopItemTitle}>{item.title}</Text>
                           </View>
@@ -1540,7 +1541,7 @@ export default function App() {
                           >
                             <Coins
                               size={12}
-                              color={canAfford ? '#FFFFFF' : '#000000'}
+                              color={canAfford ? '#FFFFFF' : '#D97706'}
                               strokeWidth={2.2}
                             />
                             <Text
@@ -1558,7 +1559,7 @@ export default function App() {
                   </>
                 ) : redeemedRewards.length === 0 ? (
                   <View style={styles.emptyBox}>
-                    <Gift size={24} color="#000000" strokeWidth={2} style={{ marginBottom: 8 }} />
+                    <Gift size={24} color="#7C3AED" strokeWidth={2} style={{ marginBottom: 8 }} />
                     <Text style={styles.emptyBoxTitle}>
                       Nenhuma recompensa resgatada ainda
                     </Text>
@@ -1570,8 +1571,8 @@ export default function App() {
                   redeemedRewards.map((entry) => (
                     <View key={entry.id} style={styles.shopItem}>
                       <View style={styles.shopItemLeft}>
-                        <View style={styles.shopItemIconCircle}>
-                          <Check size={16} color="#000000" strokeWidth={2.5} />
+                        <View style={[styles.shopItemIconCircle, { backgroundColor: '#DCFCE7', borderColor: '#16A34A' }]}>
+                          <Check size={16} color="#15803D" strokeWidth={2.5} />
                         </View>
                         <View style={{ flex: 1 }}>
                           <Text style={styles.shopItemTitle}>{entry.title}</Text>
@@ -1604,13 +1605,13 @@ export default function App() {
             <View style={styles.screenContainer}>
               <ScrollView contentContainerStyle={styles.scrollContent}>
                 <View style={styles.pageHeader}>
-                  <Award size={19} color="#000000" strokeWidth={2.5} />
+                  <Award size={19} color="#4F46E5" strokeWidth={2.5} />
                   <Text style={styles.pageHeaderTitle}>Perfil do Herói &amp; Menu</Text>
                 </View>
 
                 <View style={styles.rpgRewardBox}>
                   <View style={styles.formLabelRow}>
-                    <User size={13} color="#000000" strokeWidth={2.3} />
+                    <User size={13} color="#4F46E5" strokeWidth={2.3} />
                     <Text style={styles.formLabel}>NOME DO HERÓI</Text>
                   </View>
                   <TextInput
@@ -1622,25 +1623,25 @@ export default function App() {
                   />
                   <View style={{ gap: 6 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Shield size={14} color="#000000" strokeWidth={2.2} />
-                      <Text style={styles.rpgRewardLine}>Nível Atual: {hero.level}</Text>
+                      <Shield size={14} color="#4F46E5" strokeWidth={2.2} />
+                      <Text style={[styles.rpgRewardLine, { color: '#3730A3' }]}>Nível Atual: {hero.level}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <XpIcon size={13} color="#000000" />
-                      <Text style={styles.rpgRewardLine}>
+                      <XpIcon size={13} color="#0284C7" bgColor="#E0F2FE" />
+                      <Text style={[styles.rpgRewardLine, { color: '#0369A1' }]}>
                         Experiência Total: {formatNumberBR(hero.xp)} XP ({currentLevelProgressPct}% para o Nível {hero.level + 1})
                       </Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Coins size={14} color="#000000" strokeWidth={2.2} />
-                      <Text style={styles.rpgRewardLine}>Ouro Disponível: {hero.gold}</Text>
+                      <Coins size={14} color="#D97706" strokeWidth={2.2} />
+                      <Text style={[styles.rpgRewardLine, { color: '#B45309' }]}>Ouro Disponível: {hero.gold}</Text>
                     </View>
                   </View>
                 </View>
 
                 <View style={styles.rpgRewardBox}>
                   <View style={[styles.formLabelRow, { marginBottom: 8 }]}>
-                    <TrendingUp size={15} color="#000000" strokeWidth={2.3} />
+                    <TrendingUp size={15} color="#059669" strokeWidth={2.3} />
                     <Text style={styles.rpgRewardTitle}>HABILIDADES (SKILLS)</Text>
                   </View>
                   {Object.entries(hero.skills || {}).map(([skillName, pts]) => (
@@ -1651,40 +1652,40 @@ export default function App() {
                         justifyContent: 'space-between',
                         paddingVertical: 7,
                         borderBottomWidth: 1,
-                        borderBottomColor: '#E5E5E5',
+                        borderBottomColor: '#E2E8F0',
                       }}
                     >
                       <Text style={styles.rpgRewardLine}>{skillName}</Text>
-                      <Text style={styles.rpgRewardLine}>Nível {pts}</Text>
+                      <Text style={[styles.rpgRewardLine, { color: '#4F46E5' }]}>Nível {pts}</Text>
                     </View>
                   ))}
                 </View>
 
                 <View style={styles.rpgRewardBox}>
                   <View style={[styles.formLabelRow, { marginBottom: 8 }]}>
-                    <BarChart2 size={15} color="#000000" strokeWidth={2.3} />
+                    <BarChart2 size={15} color="#0284C7" strokeWidth={2.3} />
                     <Text style={styles.rpgRewardTitle}>ESTATÍSTICAS DA JORNADA</Text>
                   </View>
-                  <Text style={styles.rpgRewardLine}>
+                  <Text style={[styles.rpgRewardLine, { color: '#4F46E5' }]}>
                     Tarefas Pendentes: {tasks.filter((t) => t.status === 'pending').length}
                   </Text>
-                  <Text style={styles.rpgRewardLine}>
+                  <Text style={[styles.rpgRewardLine, { color: '#16A34A' }]}>
                     Tarefas Concluídas: {tasks.filter((t) => t.status === 'completed').length}
                   </Text>
-                  <Text style={styles.rpgRewardLine}>
+                  <Text style={[styles.rpgRewardLine, { color: '#DC2626' }]}>
                     Tarefas Falhadas: {tasks.filter((t) => t.status === 'failed').length}
                   </Text>
-                  <Text style={styles.rpgRewardLine}>
+                  <Text style={[styles.rpgRewardLine, { color: '#D97706' }]}>
                     Recompensas Resgatadas: {redeemedRewards.length}
                   </Text>
                 </View>
 
                 <TouchableOpacity
-                  style={[styles.btn, { marginTop: 12 }]}
+                  style={[styles.btn, { marginTop: 12, borderColor: '#EF4444', backgroundColor: '#FEF2F2' }]}
                   onPress={handleResetDemoData}
                 >
-                  <RotateCcw size={15} color="#000000" strokeWidth={2.2} />
-                  <Text style={styles.btnText}>
+                  <RotateCcw size={15} color="#DC2626" strokeWidth={2.2} />
+                  <Text style={[styles.btnText, { color: '#DC2626' }]}>
                     Restaurar Dados Originais do Protótipo
                   </Text>
                 </TouchableOpacity>
@@ -1704,7 +1705,7 @@ export default function App() {
               >
                 <Home
                   size={18}
-                  color={currentScreen === 'home' ? '#FFFFFF' : '#000000'}
+                  color={currentScreen === 'home' ? '#FFFFFF' : '#4F46E5'}
                   strokeWidth={2.3}
                 />
                 <Text
@@ -1723,7 +1724,7 @@ export default function App() {
               >
                 <ShoppingBag
                   size={18}
-                  color={currentScreen === 'shop' ? '#FFFFFF' : '#000000'}
+                  color={currentScreen === 'shop' ? '#FFFFFF' : '#4F46E5'}
                   strokeWidth={2.3}
                 />
                 <Text
@@ -1742,7 +1743,7 @@ export default function App() {
               >
                 <MenuIcon
                   size={18}
-                  color={currentScreen === 'menu' ? '#FFFFFF' : '#000000'}
+                  color={currentScreen === 'menu' ? '#FFFFFF' : '#4F46E5'}
                   strokeWidth={2.3}
                 />
                 <Text
@@ -1770,27 +1771,27 @@ export default function App() {
               <View style={styles.modalBox}>
                 {confirmTaskModal.action === 'complete' && (
                   <>
-                    <Text style={styles.modalTitle}>
+                    <Text style={[styles.modalTitle, { color: '#15803D' }]}>
                       Concluir tarefa com sucesso?
                     </Text>
                     <Text style={styles.modalTaskName}>
                       {confirmTaskModal.task.title}
                     </Text>
                     <View style={styles.modalRewardRow}>
-                      <Coins size={15} color="#000000" strokeWidth={2.2} />
-                      <Text style={styles.modalRewardText}>
+                      <Coins size={15} color="#D97706" strokeWidth={2.2} />
+                      <Text style={[styles.modalRewardText, { color: '#B45309' }]}>
                         + {confirmTaskModal.task.goldReward} Ouro
                       </Text>
                     </View>
                     <View style={styles.modalRewardRow}>
-                      <XpIcon size={14} color="#000000" />
-                      <Text style={styles.modalRewardText}>
+                      <XpIcon size={14} color="#0284C7" bgColor="#E0F2FE" />
+                      <Text style={[styles.modalRewardText, { color: '#0369A1' }]}>
                         + {formatNumberBR(confirmTaskModal.task.xpReward)} EXP
                       </Text>
                     </View>
                     {confirmTaskModal.task.increaseSkill &&
                       confirmTaskModal.task.increaseSkill !== 'Nenhuma' && (
-                        <Text style={styles.modalSkillText}>
+                        <Text style={[styles.modalSkillText, { color: '#059669' }]}>
                           +1 em {confirmTaskModal.task.increaseSkill}
                         </Text>
                       )}
@@ -1802,7 +1803,7 @@ export default function App() {
                         <Text style={styles.btnText}>Cancelar</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
-                        style={[styles.btn, styles.btnPrimary]}
+                        style={[styles.btn, styles.btnSuccess]}
                         onPress={() => executeCompleteTask(confirmTaskModal.task)}
                       >
                         <Check size={15} color="#FFFFFF" strokeWidth={2.8} />
@@ -1814,11 +1815,11 @@ export default function App() {
 
                 {confirmTaskModal.action === 'fail' && (
                   <>
-                    <Text style={styles.modalTitle}>Marcar tarefa como falha?</Text>
+                    <Text style={[styles.modalTitle, { color: '#B91C1C' }]}>Marcar tarefa como falha?</Text>
                     <Text style={styles.modalTaskName}>
                       {confirmTaskModal.task.title}
                     </Text>
-                    <Text style={styles.modalRewardText}>
+                    <Text style={[styles.modalRewardText, { color: '#DC2626' }]}>
                       Penalidade: -{confirmTaskModal.task.goldReward} Ouro | -
                       {formatNumberBR(confirmTaskModal.task.xpReward)} EXP
                     </Text>
@@ -1830,7 +1831,7 @@ export default function App() {
                         <Text style={styles.btnText}>Cancelar</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
-                        style={[styles.btn, styles.btnPrimary]}
+                        style={[styles.btn, styles.btnDanger]}
                         onPress={() => executeFailTask(confirmTaskModal.task)}
                       >
                         <Text style={styles.btnPrimaryText}>Confirmar Falha</Text>
@@ -1841,7 +1842,7 @@ export default function App() {
 
                 {confirmTaskModal.action === 'delete' && (
                   <>
-                    <Text style={styles.modalTitle}>Excluir tarefa?</Text>
+                    <Text style={[styles.modalTitle, { color: '#B91C1C' }]}>Excluir tarefa?</Text>
                     <Text style={styles.modalTaskName}>
                       {confirmTaskModal.task.title}
                     </Text>
@@ -1853,7 +1854,7 @@ export default function App() {
                         <Text style={styles.btnText}>Cancelar</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
-                        style={[styles.btn, styles.btnPrimary]}
+                        style={[styles.btn, styles.btnDanger]}
                         onPress={() => executeDeleteTask(confirmTaskModal.task)}
                       >
                         <Trash2 size={14} color="#FFFFFF" strokeWidth={2.5} />
@@ -1982,13 +1983,13 @@ export default function App() {
                   {selectedRewardToRedeem.title}
                 </Text>
                 <View style={styles.modalRewardRow}>
-                  <Coins size={15} color="#000000" strokeWidth={2.2} />
-                  <Text style={styles.modalRewardText}>
+                  <Coins size={15} color="#D97706" strokeWidth={2.2} />
+                  <Text style={[styles.modalRewardText, { color: '#B45309' }]}>
                     Saldo: {hero.gold} -&gt; {hero.gold - selectedRewardToRedeem.price} de ouro
                   </Text>
                 </View>
                 {hero.gold < selectedRewardToRedeem.price && (
-                  <Text style={[styles.instructionText, { fontWeight: '700', marginTop: 4 }]}>
+                  <Text style={[styles.instructionText, { fontWeight: '700', marginTop: 4, color: '#DC2626' }]}>
                     Saldo insuficiente para este resgate.
                   </Text>
                 )}
@@ -2000,7 +2001,7 @@ export default function App() {
                     <Text style={styles.btnText}>Cancelar</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.btn, styles.btnPrimary]}
+                    style={[styles.btn, styles.btnSuccess]}
                     onPress={() => handleRedeemReward(selectedRewardToRedeem)}
                   >
                     <Check size={15} color="#FFFFFF" strokeWidth={2.8} />
@@ -2025,13 +2026,13 @@ export default function App() {
 
               <View style={styles.formGroup}>
                 <View style={styles.formLabelRow}>
-                  <Gift size={13} color="#000000" strokeWidth={2.3} />
+                  <Gift size={13} color="#7C3AED" strokeWidth={2.3} />
                   <Text style={styles.formLabel}>TÍTULO DA RECOMPENSA</Text>
                 </View>
                 <TextInput
                   style={styles.formInput}
                   placeholder="Ex: Assistir 1 filme"
-                  placeholderTextColor="#737373"
+                  placeholderTextColor="#94A3B8"
                   value={newRewardTitle}
                   onChangeText={setNewRewardTitle}
                 />
@@ -2039,13 +2040,13 @@ export default function App() {
 
               <View style={styles.formGroup}>
                 <View style={styles.formLabelRow}>
-                  <Coins size={13} color="#000000" strokeWidth={2.3} />
+                  <Coins size={13} color="#D97706" strokeWidth={2.3} />
                   <Text style={styles.formLabel}>CUSTO EM OURO</Text>
                 </View>
                 <TextInput
                   style={styles.formInput}
                   placeholder="Ex: 25"
-                  placeholderTextColor="#737373"
+                  placeholderTextColor="#94A3B8"
                   keyboardType="numeric"
                   value={newRewardPrice}
                   onChangeText={setNewRewardPrice}
@@ -2078,17 +2079,17 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F8FAFC',
   },
   appFrame: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#F1F5F9',
     maxWidth: 480,
     width: '100%',
     alignSelf: 'center',
   },
   feedbackToast: {
-    backgroundColor: '#000000',
+    backgroundColor: '#1E1B4B',
     marginHorizontal: 16,
     marginTop: 10,
     borderRadius: 16,
@@ -2097,6 +2098,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    borderWidth: 1,
+    borderColor: '#4338CA',
   },
   feedbackToastText: {
     color: '#FFFFFF',
@@ -2107,7 +2110,7 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     position: 'relative',
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#F1F5F9',
   },
   scrollContent: {
     padding: 16,
@@ -2120,27 +2123,27 @@ const styles = StyleSheet.create({
 
   /* Hero Card */
   heroCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#EEF2FF',
     padding: 16,
     borderRadius: 22,
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#6366F1',
     marginBottom: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowColor: '#4F46E5',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 3,
   },
   heroAvatar: {
     width: 52,
     height: 52,
     borderRadius: 26,
     borderWidth: 1.5,
-    borderColor: '#000000',
-    backgroundColor: '#F5F5F5',
+    borderColor: '#4F46E5',
+    backgroundColor: '#E0E7FF',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 13,
@@ -2151,7 +2154,7 @@ const styles = StyleSheet.create({
   heroName: {
     fontWeight: '800',
     fontSize: 16,
-    color: '#000000',
+    color: '#1E1B4B',
   },
   heroStats: {
     flexDirection: 'row',
@@ -2168,19 +2171,19 @@ const styles = StyleSheet.create({
   heroStatText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#000000',
+    color: '#1E293B',
   },
   heroStatDivider: {
     fontSize: 12,
-    color: '#737373',
+    color: '#94A3B8',
     fontWeight: '700',
   },
   heroProgressCircle: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    borderWidth: 2,
-    borderColor: '#000000',
+    borderWidth: 2.5,
+    borderColor: '#4F46E5',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
@@ -2188,7 +2191,7 @@ const styles = StyleSheet.create({
   heroProgressText: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#000000',
+    color: '#4F46E5',
   },
 
   /* Search & Filter */
@@ -2196,7 +2199,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#CBD5E1',
     borderRadius: 18,
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 14,
@@ -2206,7 +2209,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 11,
     fontSize: 13,
-    color: '#000000',
+    color: '#0F172A',
     fontWeight: '600',
   },
   filterActionsRow: {
@@ -2223,17 +2226,18 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#FFFFFF',
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#6366F1',
     alignItems: 'center',
     justifyContent: 'center',
   },
   pillBtnActive: {
-    backgroundColor: '#000000',
+    backgroundColor: '#4F46E5',
+    borderColor: '#4F46E5',
   },
   pillBtnText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#000000',
+    color: '#4F46E5',
   },
   pillBtnTextActive: {
     color: '#FFFFFF',
@@ -2247,17 +2251,25 @@ const styles = StyleSheet.create({
   taskItem: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#CBD5E1',
     borderRadius: 20,
     padding: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
   },
   taskItemCompleted: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F0FDF4',
+    borderColor: '#86EFAC',
   },
   taskItemFailed: {
+    backgroundColor: '#FEF2F2',
+    borderColor: '#FCA5A5',
     borderStyle: 'dashed',
   },
   taskInfoCol: {
@@ -2267,11 +2279,11 @@ const styles = StyleSheet.create({
   taskTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#000000',
+    color: '#0F172A',
   },
   taskTitleCompleted: {
     textDecorationLine: 'line-through',
-    color: '#525252',
+    color: '#15803D',
   },
   taskDateRow: {
     flexDirection: 'row',
@@ -2281,7 +2293,7 @@ const styles = StyleSheet.create({
   },
   taskDate: {
     fontSize: 11,
-    color: '#525252',
+    color: '#64748B',
     fontWeight: '500',
   },
   taskRewardsBadgeRow: {
@@ -2298,16 +2310,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#000000',
-    backgroundColor: '#FAFAFA',
+    borderColor: '#CBD5E1',
+    backgroundColor: '#F8FAFC',
+  },
+  miniTagGold: {
+    backgroundColor: '#FEF3C7',
+    borderColor: '#F59E0B',
+  },
+  miniTagXp: {
+    backgroundColor: '#E0F2FE',
+    borderColor: '#38BDF8',
+  },
+  miniTagSuccess: {
+    backgroundColor: '#16A34A',
+    borderColor: '#15803D',
+  },
+  miniTagDanger: {
+    backgroundColor: '#DC2626',
+    borderColor: '#B91C1C',
   },
   miniTagInverted: {
-    backgroundColor: '#000000',
+    backgroundColor: '#4F46E5',
   },
   miniTagText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#000000',
+    color: '#0F172A',
   },
   miniTagTextInverted: {
     fontSize: 10,
@@ -2320,17 +2348,22 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   checkBox: {
-    width: 30,
-    height: 30,
+    width: 32,
+    height: 32,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#000000',
-    backgroundColor: '#FFFFFF',
+    borderColor: '#10B981',
+    backgroundColor: '#ECFDF5',
     alignItems: 'center',
     justifyContent: 'center',
   },
   checkBoxChecked: {
-    backgroundColor: '#000000',
+    backgroundColor: '#10B981',
+    borderColor: '#059669',
+  },
+  checkBoxFailed: {
+    backgroundColor: '#FEE2E2',
+    borderColor: '#EF4444',
   },
   menuDotsBtn: {
     width: 32,
@@ -2338,18 +2371,19 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F1F5F9',
     borderWidth: 1,
-    borderColor: '#000000',
+    borderColor: '#CBD5E1',
   },
   menuDotsBtnActive: {
-    backgroundColor: '#000000',
+    backgroundColor: '#4F46E5',
+    borderColor: '#4F46E5',
   },
   contextMenu: {
     marginTop: 6,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#C7D2FE',
     backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     overflow: 'hidden',
@@ -2361,7 +2395,7 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     paddingHorizontal: 10,
     borderRightWidth: 1,
-    borderRightColor: '#E5E5E5',
+    borderRightColor: '#E2E8F0',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -2371,7 +2405,7 @@ const styles = StyleSheet.create({
   contextMenuText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#000000',
+    color: '#0F172A',
   },
 
   /* FAB */
@@ -2382,14 +2416,14 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#000000',
+    backgroundColor: '#4F46E5',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
+    shadowColor: '#4F46E5',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 5,
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 6,
   },
 
   /* Forms & Headers */
@@ -2400,20 +2434,20 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingBottom: 12,
     borderBottomWidth: 1.5,
-    borderBottomColor: '#000000',
+    borderBottomColor: '#CBD5E1',
   },
   pageHeaderTitle: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#000000',
+    color: '#1E1B4B',
   },
   backLink: {
     width: 36,
     height: 36,
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: '#000000',
-    backgroundColor: '#FFFFFF',
+    borderColor: '#6366F1',
+    backgroundColor: '#EEF2FF',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -2429,7 +2463,7 @@ const styles = StyleSheet.create({
   formLabel: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#000000',
+    color: '#3730A3',
     textTransform: 'uppercase',
     letterSpacing: 0.4,
   },
@@ -2439,9 +2473,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#CBD5E1',
     backgroundColor: '#FFFFFF',
-    color: '#000000',
+    color: '#0F172A',
     fontSize: 13,
     fontWeight: '600',
   },
@@ -2451,19 +2485,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#CBD5E1',
     backgroundColor: '#FFFFFF',
   },
   inputWithIconField: {
     flex: 1,
     paddingVertical: 11,
-    color: '#000000',
+    color: '#0F172A',
     fontSize: 13,
     fontWeight: '600',
   },
   instructionText: {
     fontSize: 11,
-    color: '#525252',
+    color: '#64748B',
     marginBottom: 6,
     lineHeight: 15,
   },
@@ -2473,7 +2507,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#CBD5E1',
     backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -2482,13 +2516,13 @@ const styles = StyleSheet.create({
   dropdownTriggerText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#000000',
+    color: '#0F172A',
   },
   dropdownList: {
     marginTop: 6,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#6366F1',
     backgroundColor: '#FFFFFF',
     overflow: 'hidden',
   },
@@ -2499,15 +2533,15 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     paddingHorizontal: 14,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: '#E2E8F0',
     backgroundColor: '#FFFFFF',
   },
   dropdownItemSelected: {
-    backgroundColor: '#000000',
+    backgroundColor: '#4F46E5',
   },
   dropdownItemText: {
     fontSize: 13,
-    color: '#000000',
+    color: '#0F172A',
     fontWeight: '600',
   },
   dropdownItemTextSelected: {
@@ -2523,13 +2557,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#CBD5E1',
     backgroundColor: '#FFFFFF',
   },
   toggleRowLabel: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#000000',
+    color: '#0F172A',
   },
   remindersList: {
     marginTop: 6,
@@ -2541,15 +2575,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#F59E0B',
     paddingVertical: 9,
     paddingHorizontal: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFBEB',
   },
   reminderChipText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#000000',
+    color: '#92400E',
   },
   reminderInputRow: {
     flexDirection: 'row',
@@ -2565,7 +2599,7 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 18,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#CBD5E1',
   },
   sliderHeader: {
     flexDirection: 'row',
@@ -2581,7 +2615,7 @@ const styles = StyleSheet.create({
   sliderHeaderText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#000000',
+    color: '#0F172A',
   },
   customSliderBarWrapper: {
     position: 'relative',
@@ -2593,8 +2627,8 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#000000',
-    backgroundColor: '#F5F5F5',
+    borderColor: '#6366F1',
+    backgroundColor: '#EEF2FF',
     position: 'absolute',
     left: 0,
     right: 0,
@@ -2602,7 +2636,7 @@ const styles = StyleSheet.create({
   },
   staticSliderFill: {
     height: '100%',
-    backgroundColor: '#000000',
+    backgroundColor: '#4F46E5',
   },
   nativeSlider: {
     width: '100%',
@@ -2615,14 +2649,14 @@ const styles = StyleSheet.create({
   sliderLabelText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#525252',
+    color: '#64748B',
   },
   rpgRewardBox: {
     backgroundColor: '#FFFFFF',
     padding: 14,
     borderRadius: 18,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#C7D2FE',
     marginVertical: 8,
   },
   rpgRewardHeaderRow: {
@@ -2634,12 +2668,12 @@ const styles = StyleSheet.create({
   rpgRewardTitle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#000000',
+    color: '#1E1B4B',
   },
   rpgRewardLine: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#000000',
+    color: '#1E293B',
     marginTop: 2,
   },
   customRewardInputsRow: {
@@ -2653,15 +2687,15 @@ const styles = StyleSheet.create({
     gap: 8,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#FCA5A5',
     padding: 12,
     marginBottom: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FEF2F2',
   },
   penaltyText: {
     flex: 1,
     fontSize: 11,
-    color: '#000000',
+    color: '#991B1B',
     fontWeight: '600',
     lineHeight: 15,
   },
@@ -2676,7 +2710,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1.5,
-    borderTopColor: '#000000',
+    borderTopColor: '#CBD5E1',
     flexDirection: 'row',
     gap: 10,
   },
@@ -2688,18 +2722,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#CBD5E1',
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },
   btnPrimary: {
-    backgroundColor: '#000000',
+    backgroundColor: '#4F46E5',
+    borderColor: '#4338CA',
+  },
+  btnSuccess: {
+    backgroundColor: '#16A34A',
+    borderColor: '#15803D',
+  },
+  btnDanger: {
+    backgroundColor: '#DC2626',
+    borderColor: '#B91C1C',
   },
   btnText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#000000',
+    color: '#475569',
   },
   btnPrimaryText: {
     fontSize: 12,
@@ -2716,24 +2759,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 11,
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: '#000000',
-    backgroundColor: '#FFFFFF',
+    borderColor: '#6366F1',
+    backgroundColor: '#EEF2FF',
   },
   headerActionTagActive: {
-    backgroundColor: '#000000',
+    backgroundColor: '#4F46E5',
   },
   headerActionTagText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#000000',
+    color: '#4F46E5',
   },
   shopTabs: {
     flexDirection: 'row',
     borderRadius: 18,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#C7D2FE',
     marginBottom: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#EEF2FF',
     padding: 3,
     overflow: 'hidden',
   },
@@ -2745,15 +2788,15 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: 9,
     borderRadius: 14,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'transparent',
   },
   shopTabActive: {
-    backgroundColor: '#000000',
+    backgroundColor: '#4F46E5',
   },
   shopTabText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#000000',
+    color: '#4F46E5',
   },
   shopTabTextActive: {
     color: '#FFFFFF',
@@ -2765,20 +2808,20 @@ const styles = StyleSheet.create({
     padding: 13,
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: '#000000',
-    backgroundColor: '#FFFFFF',
+    borderColor: '#F59E0B',
+    backgroundColor: '#FEF3C7',
     marginBottom: 12,
   },
   shopBalanceText: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#000000',
+    color: '#92400E',
   },
   shopItem: {
     backgroundColor: '#FFFFFF',
     borderRadius: 18,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#CBD5E1',
     paddingVertical: 12,
     paddingHorizontal: 14,
     flexDirection: 'row',
@@ -2797,16 +2840,16 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F3E8FF',
     borderWidth: 1,
-    borderColor: '#000000',
+    borderColor: '#C084FC',
     alignItems: 'center',
     justifyContent: 'center',
   },
   shopItemTitle: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#000000',
+    color: '#0F172A',
   },
   shopPriceBox: {
     flexDirection: 'row',
@@ -2816,16 +2859,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: '#000000',
-    backgroundColor: '#FFFFFF',
+    borderColor: '#F59E0B',
+    backgroundColor: '#FEF3C7',
   },
   shopPriceBoxAffordable: {
-    backgroundColor: '#000000',
+    backgroundColor: '#D97706',
+    borderColor: '#B45309',
   },
   shopPriceText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#000000',
+    color: '#B45309',
   },
   shopPriceTextAffordable: {
     color: '#FFFFFF',
@@ -2836,7 +2880,7 @@ const styles = StyleSheet.create({
     height: 66,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1.5,
-    borderTopColor: '#000000',
+    borderTopColor: '#CBD5E1',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -2849,15 +2893,15 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     paddingHorizontal: 18,
     borderRadius: 22,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#EEF2FF',
   },
   navItemActive: {
-    backgroundColor: '#000000',
+    backgroundColor: '#4F46E5',
   },
   navItemText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#000000',
+    color: '#4F46E5',
   },
   navItemTextActive: {
     color: '#FFFFFF',
@@ -2867,7 +2911,7 @@ const styles = StyleSheet.create({
   emptyBox: {
     borderRadius: 20,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#C7D2FE',
     backgroundColor: '#FFFFFF',
     padding: 22,
     alignItems: 'center',
@@ -2876,19 +2920,19 @@ const styles = StyleSheet.create({
   emptyBoxTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#000000',
+    color: '#1E1B4B',
     marginBottom: 4,
   },
   emptyBoxSub: {
     fontSize: 12,
-    color: '#525252',
+    color: '#64748B',
     textAlign: 'center',
   },
 
   /* Modals */
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: 'rgba(15, 23, 42, 0.55)',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
@@ -2899,22 +2943,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: '#000000',
+    borderColor: '#6366F1',
     padding: 20,
   },
   modalTitle: {
     fontSize: 15,
     fontWeight: '800',
-    color: '#000000',
+    color: '#1E1B4B',
     marginBottom: 10,
     borderBottomWidth: 1.5,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: '#E2E8F0',
     paddingBottom: 8,
   },
   modalTaskName: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#000000',
+    color: '#0F172A',
     marginBottom: 10,
   },
   modalRewardRow: {
@@ -2926,12 +2970,12 @@ const styles = StyleSheet.create({
   modalRewardText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#000000',
+    color: '#0F172A',
   },
   modalSkillText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#525252',
+    color: '#059669',
     marginTop: 2,
   },
   modalButtonsRow: {
@@ -2947,17 +2991,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: '#000000',
+    borderColor: '#CBD5E1',
     marginBottom: 8,
     backgroundColor: '#FFFFFF',
   },
   modalOptionBtnSelected: {
-    backgroundColor: '#000000',
+    backgroundColor: '#4F46E5',
+    borderColor: '#4338CA',
   },
   modalOptionText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#000000',
+    color: '#0F172A',
   },
   modalOptionTextSelected: {
     color: '#FFFFFF',

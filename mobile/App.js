@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
-  Platform,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -43,6 +42,16 @@ import {
   ShoppingBag,
   Menu as MenuIcon,
   Award,
+  FileText,
+  AlignLeft,
+  Clock,
+  Flame,
+  Star,
+  Skull,
+  Link,
+  Gift,
+  BarChart2,
+  CheckCircle2,
 } from 'lucide-react-native';
 
 const STORAGE_KEY = '@do_it_now_state_v2';
@@ -86,7 +95,7 @@ const DEFAULT_TASKS = [
     goldReward: 10,
     increaseSkill: 'Organização',
     decreaseSkill: 'Disciplina',
-    status: 'pending', // 'pending' | 'completed' | 'failed'
+    status: 'pending',
     createdAt: 1700000003000,
   },
   {
@@ -153,6 +162,38 @@ function formatNumberBR(num) {
     .replace('.', ',');
 }
 
+function XpIcon({ size = 14, color = '#000000', bgColor = 'transparent' }) {
+  const height = Math.max(13, Math.round(size * 1.1));
+  const width = Math.max(19, Math.round(size * 1.55));
+  const fontSize = Math.max(8, Math.round(size * 0.65));
+  return (
+    <View
+      style={{
+        width,
+        height,
+        borderRadius: Math.round(height / 3.2),
+        borderWidth: 1.4,
+        borderColor: color,
+        backgroundColor: bgColor,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Text
+        style={{
+          fontSize,
+          fontWeight: '900',
+          color,
+          lineHeight: fontSize + 1,
+          letterSpacing: -0.3,
+        }}
+      >
+        XP
+      </Text>
+    </View>
+  );
+}
+
 export default function App() {
   // Navigation state: 'home' | 'step1' | 'step2' | 'shop' | 'menu'
   const [currentScreen, setCurrentScreen] = useState('home');
@@ -166,14 +207,14 @@ export default function App() {
 
   // Home screen filters & UI state
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('pending'); // 'all' | 'pending' | 'completed' | 'failed'
-  const [sortBy, setSortBy] = useState('recent'); // 'recent' | 'reward' | 'difficulty' | 'title'
+  const [statusFilter, setStatusFilter] = useState('pending');
+  const [sortBy, setSortBy] = useState('recent');
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showSortModal, setShowSortModal] = useState(false);
   const [openMenuTaskId, setOpenMenuTaskId] = useState(null);
 
   // Task completion / fail modal state
-  const [confirmTaskModal, setConfirmTaskModal] = useState(null); // { task, action: 'complete' | 'fail' | 'delete' }
+  const [confirmTaskModal, setConfirmTaskModal] = useState(null);
 
   // Task Form state (Step 1 & Step 2)
   const [editingTaskId, setEditingTaskId] = useState(null);
@@ -199,7 +240,7 @@ export default function App() {
   const [showDecreaseSkillDropdown, setShowDecreaseSkillDropdown] = useState(false);
 
   // Shop state
-  const [shopTab, setShopTab] = useState('available'); // 'available' | 'redeemed'
+  const [shopTab, setShopTab] = useState('available');
   const [shopSearch, setShopSearch] = useState('');
   const [showShopSearch, setShowShopSearch] = useState(false);
   const [shopSortAsc, setShopSortAsc] = useState(true);
@@ -258,7 +299,7 @@ export default function App() {
     })();
   }, [hero, tasks, rewards, redeemedRewards, isLoaded]);
 
-  // Derived RPG progress (10 XP per level: e.g. 9 XP = 90% of Level 0 -> Level 1 at 10 XP)
+  // Derived RPG progress
   const xpPerLevel = 10;
   const currentLevelProgressPct = useMemo(() => {
     const xpInCurrentLevel = hero.xp % xpPerLevel;
@@ -562,6 +603,7 @@ export default function App() {
           {/* Feedback Notification Toast */}
           {feedbackBanner && (
             <TouchableOpacity style={styles.feedbackToast} onPress={() => setFeedbackBanner(null)}>
+              <CheckCircle2 size={16} color="#FFFFFF" strokeWidth={2.5} />
               <Text style={styles.feedbackToastText}>{feedbackBanner}</Text>
               <X size={16} color="#FFFFFF" strokeWidth={2.5} />
             </TouchableOpacity>
@@ -581,24 +623,24 @@ export default function App() {
                   onPress={() => setCurrentScreen('menu')}
                 >
                   <View style={styles.heroAvatar}>
-                    <User size={24} color="#000000" strokeWidth={2.2} />
+                    <User size={26} color="#000000" strokeWidth={2.2} />
                   </View>
                   <View style={styles.heroInfo}>
                     <Text style={styles.heroName}>{hero.name}</Text>
                     <View style={styles.heroStats}>
                       <View style={styles.statBadge}>
-                        <Shield size={12} color="#000000" strokeWidth={2.2} />
+                        <Shield size={13} color="#000000" strokeWidth={2.2} />
                         <Text style={styles.heroStatText}>Nível {hero.level}</Text>
                       </View>
                       <Text style={styles.heroStatDivider}>•</Text>
                       <View style={styles.statBadge}>
-                        <Coins size={12} color="#000000" strokeWidth={2.2} />
+                        <Coins size={13} color="#000000" strokeWidth={2.2} />
                         <Text style={styles.heroStatText}>{hero.gold}</Text>
                       </View>
                       <Text style={styles.heroStatDivider}>•</Text>
                       <View style={styles.statBadge}>
-                        <Sparkles size={12} color="#000000" strokeWidth={2.2} />
-                        <Text style={styles.heroStatText}>XP: {formatNumberBR(hero.xp)}</Text>
+                        <XpIcon size={13} color="#000000" />
+                        <Text style={styles.heroStatText}>{formatNumberBR(hero.xp)}</Text>
                       </View>
                     </View>
                   </View>
@@ -609,7 +651,7 @@ export default function App() {
 
                 {/* Search Box */}
                 <View style={styles.searchBoxWrapper}>
-                  <Search size={16} color="#000000" strokeWidth={2.2} style={{ marginRight: 8 }} />
+                  <Search size={17} color="#000000" strokeWidth={2.2} style={{ marginRight: 8 }} />
                   <TextInput
                     style={styles.searchInput}
                     placeholder="Pesquisar tarefa..."
@@ -619,7 +661,7 @@ export default function App() {
                   />
                   {searchQuery.length > 0 && (
                     <TouchableOpacity onPress={() => setSearchQuery('')} style={{ padding: 4 }}>
-                      <X size={16} color="#000000" strokeWidth={2.2} />
+                      <X size={17} color="#000000" strokeWidth={2.2} />
                     </TouchableOpacity>
                   )}
                 </View>
@@ -634,7 +676,7 @@ export default function App() {
                     onPress={() => setShowFilterModal(true)}
                   >
                     <SlidersHorizontal
-                      size={14}
+                      size={15}
                       color={statusFilter !== 'pending' ? '#FFFFFF' : '#000000'}
                       strokeWidth={2.2}
                     />
@@ -658,7 +700,7 @@ export default function App() {
                     style={styles.pillBtn}
                     onPress={() => setShowSortModal(true)}
                   >
-                    <ArrowUpDown size={14} color="#000000" strokeWidth={2.2} />
+                    <ArrowUpDown size={15} color="#000000" strokeWidth={2.2} />
                     <Text style={styles.pillBtnText}>
                       {sortBy === 'recent'
                         ? 'Ordenação'
@@ -674,6 +716,7 @@ export default function App() {
                 {/* Task List */}
                 {filteredTasks.length === 0 ? (
                   <View style={styles.emptyBox}>
+                    <CheckCircle2 size={24} color="#000000" strokeWidth={2} style={{ marginBottom: 8 }} />
                     <Text style={styles.emptyBoxTitle}>Nenhuma tarefa encontrada</Text>
                     <Text style={styles.emptyBoxSub}>
                       Toque no botão + para cadastrar uma nova tarefa ou altere o filtro atual.
@@ -704,7 +747,7 @@ export default function App() {
                               {task.title}
                             </Text>
                             <View style={styles.taskDateRow}>
-                              <Calendar size={11} color="#525252" strokeWidth={2} />
+                              <Calendar size={12} color="#525252" strokeWidth={2} />
                               <Text style={styles.taskDate}>
                                 {task.startDate}
                                 {task.repeat && task.repeat !== 'Não repetir'
@@ -714,13 +757,13 @@ export default function App() {
                             </View>
                             <View style={styles.taskRewardsBadgeRow}>
                               <View style={styles.miniTag}>
-                                <Coins size={10} color="#000000" strokeWidth={2.2} />
+                                <Coins size={11} color="#000000" strokeWidth={2.2} />
                                 <Text style={styles.miniTagText}>+{task.goldReward}</Text>
                               </View>
                               <View style={styles.miniTag}>
-                                <Sparkles size={10} color="#000000" strokeWidth={2.2} />
+                                <XpIcon size={11} color="#000000" />
                                 <Text style={styles.miniTagText}>
-                                  +{formatNumberBR(task.xpReward)} XP
+                                  +{formatNumberBR(task.xpReward)}
                                 </Text>
                               </View>
                               {isFailed && (
@@ -754,7 +797,9 @@ export default function App() {
                                 <Check size={16} color="#FFFFFF" strokeWidth={3} />
                               ) : isFailed ? (
                                 <AlertTriangle size={14} color="#000000" strokeWidth={2.5} />
-                              ) : null}
+                              ) : (
+                                <Check size={16} color="#000000" strokeWidth={2.5} />
+                              )}
                             </TouchableOpacity>
 
                             <TouchableOpacity
@@ -782,7 +827,7 @@ export default function App() {
                               style={styles.contextMenuItem}
                               onPress={() => handleEditTask(task)}
                             >
-                              <Edit3 size={13} color="#000000" strokeWidth={2.2} />
+                              <Edit3 size={14} color="#000000" strokeWidth={2.2} />
                               <Text style={styles.contextMenuText}>Editar</Text>
                             </TouchableOpacity>
 
@@ -793,7 +838,7 @@ export default function App() {
                                   setConfirmTaskModal({ task, action: 'fail' })
                                 }
                               >
-                                <XCircle size={13} color="#000000" strokeWidth={2.2} />
+                                <XCircle size={14} color="#000000" strokeWidth={2.2} />
                                 <Text style={styles.contextMenuText}>Falhar</Text>
                               </TouchableOpacity>
                             ) : (
@@ -801,7 +846,7 @@ export default function App() {
                                 style={styles.contextMenuItem}
                                 onPress={() => handleReopenTask(task)}
                               >
-                                <RotateCcw size={13} color="#000000" strokeWidth={2.2} />
+                                <RotateCcw size={14} color="#000000" strokeWidth={2.2} />
                                 <Text style={styles.contextMenuText}>Reabrir</Text>
                               </TouchableOpacity>
                             )}
@@ -812,7 +857,7 @@ export default function App() {
                                 setConfirmTaskModal({ task, action: 'delete' })
                               }
                             >
-                              <Trash2 size={13} color="#000000" strokeWidth={2.2} />
+                              <Trash2 size={14} color="#000000" strokeWidth={2.2} />
                               <Text style={styles.contextMenuText}>Excluir</Text>
                             </TouchableOpacity>
                           </View>
@@ -846,7 +891,7 @@ export default function App() {
                     style={styles.backLink}
                     onPress={() => setCurrentScreen('home')}
                   >
-                    <ArrowLeft size={16} color="#000000" strokeWidth={2.5} />
+                    <ArrowLeft size={17} color="#000000" strokeWidth={2.5} />
                   </TouchableOpacity>
                   <Text style={styles.pageHeaderTitle}>
                     {editingTaskId ? 'Editar Tarefa (1/2)' : 'Nova Tarefa (1/2)'}
@@ -855,7 +900,10 @@ export default function App() {
 
                 {/* Título */}
                 <View style={styles.formGroup}>
-                  <Text style={styles.formLabel}>TÍTULO</Text>
+                  <View style={styles.formLabelRow}>
+                    <FileText size={13} color="#000000" strokeWidth={2.3} />
+                    <Text style={styles.formLabel}>TÍTULO</Text>
+                  </View>
                   <TextInput
                     style={styles.formInput}
                     value={formTitle}
@@ -867,7 +915,10 @@ export default function App() {
 
                 {/* Descrição */}
                 <View style={styles.formGroup}>
-                  <Text style={styles.formLabel}>DESCRIÇÃO</Text>
+                  <View style={styles.formLabelRow}>
+                    <AlignLeft size={13} color="#000000" strokeWidth={2.3} />
+                    <Text style={styles.formLabel}>DESCRIÇÃO</Text>
+                  </View>
                   <TextInput
                     style={styles.formInput}
                     value={formDescription}
@@ -879,7 +930,10 @@ export default function App() {
 
                 {/* Repetição */}
                 <View style={styles.formGroup}>
-                  <Text style={styles.formLabel}>REPETIÇÃO</Text>
+                  <View style={styles.formLabelRow}>
+                    <Repeat size={13} color="#000000" strokeWidth={2.3} />
+                    <Text style={styles.formLabel}>REPETIÇÃO</Text>
+                  </View>
                   <Text style={styles.instructionText}>
                     Aqui você pode definir se a tarefa vai repetir e como vai repetir
                   </Text>
@@ -935,7 +989,10 @@ export default function App() {
 
                 {/* Data de Início */}
                 <View style={styles.formGroup}>
-                  <Text style={styles.formLabel}>DATA DE INÍCIO</Text>
+                  <View style={styles.formLabelRow}>
+                    <Calendar size={13} color="#000000" strokeWidth={2.3} />
+                    <Text style={styles.formLabel}>DATA DE INÍCIO</Text>
+                  </View>
                   <View style={styles.inputWithIconWrapper}>
                     <Calendar size={15} color="#000000" strokeWidth={2.2} style={{ marginRight: 8 }} />
                     <TextInput
@@ -953,7 +1010,10 @@ export default function App() {
                   style={styles.toggleRow}
                   onPress={() => setFormAllDay(!formAllDay)}
                 >
-                  <Text style={styles.toggleRowLabel}>Dia inteiro</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    <Clock size={16} color="#000000" strokeWidth={2.2} />
+                    <Text style={styles.toggleRowLabel}>Dia inteiro</Text>
+                  </View>
                   <View style={[styles.checkBox, formAllDay && styles.checkBoxChecked]}>
                     {formAllDay && <Check size={15} color="#FFFFFF" strokeWidth={3} />}
                   </View>
@@ -1009,7 +1069,7 @@ export default function App() {
                     style={[styles.pillBtn, { width: '100%', marginTop: 8 }]}
                     onPress={() => setShowReminderInput(true)}
                   >
-                    <Bell size={14} color="#000000" strokeWidth={2.2} />
+                    <Bell size={15} color="#000000" strokeWidth={2.2} />
                     <Text style={styles.pillBtnText}>Adicionar lembrete</Text>
                   </TouchableOpacity>
                 )}
@@ -1021,6 +1081,7 @@ export default function App() {
                   style={styles.btn}
                   onPress={() => setCurrentScreen('home')}
                 >
+                  <X size={15} color="#000000" strokeWidth={2.5} />
                   <Text style={styles.btnText}>Cancelar</Text>
                 </TouchableOpacity>
 
@@ -1047,7 +1108,7 @@ export default function App() {
                     style={styles.backLink}
                     onPress={() => setCurrentScreen('step1')}
                   >
-                    <ArrowLeft size={16} color="#000000" strokeWidth={2.5} />
+                    <ArrowLeft size={17} color="#000000" strokeWidth={2.5} />
                   </TouchableOpacity>
                   <Text style={styles.pageHeaderTitle}>Elementos de RPG (2/2)</Text>
                 </View>
@@ -1055,7 +1116,10 @@ export default function App() {
                 {/* Slider Dificuldade */}
                 <View style={styles.sliderContainer}>
                   <View style={styles.sliderHeader}>
-                    <Text style={styles.sliderHeaderText}>Dificuldade</Text>
+                    <View style={styles.sliderTitleRow}>
+                      <Flame size={15} color="#000000" strokeWidth={2.2} />
+                      <Text style={styles.sliderHeaderText}>Dificuldade</Text>
+                    </View>
                     <Text style={styles.sliderHeaderText}>{formDifficulty}%</Text>
                   </View>
                   <View style={styles.customSliderBarWrapper}>
@@ -1089,7 +1153,10 @@ export default function App() {
                 {/* Slider Importância */}
                 <View style={styles.sliderContainer}>
                   <View style={styles.sliderHeader}>
-                    <Text style={styles.sliderHeaderText}>Importância</Text>
+                    <View style={styles.sliderTitleRow}>
+                      <Star size={15} color="#000000" strokeWidth={2.2} />
+                      <Text style={styles.sliderHeaderText}>Importância</Text>
+                    </View>
                     <Text style={styles.sliderHeaderText}>{formImportance}%</Text>
                   </View>
                   <View style={styles.customSliderBarWrapper}>
@@ -1123,7 +1190,10 @@ export default function App() {
                 {/* Slider Medo */}
                 <View style={styles.sliderContainer}>
                   <View style={styles.sliderHeader}>
-                    <Text style={styles.sliderHeaderText}>Medo</Text>
+                    <View style={styles.sliderTitleRow}>
+                      <Skull size={15} color="#000000" strokeWidth={2.2} />
+                      <Text style={styles.sliderHeaderText}>Medo</Text>
+                    </View>
                     <Text style={styles.sliderHeaderText}>{formFear}%</Text>
                   </View>
                   <View style={styles.customSliderBarWrapper}>
@@ -1160,7 +1230,10 @@ export default function App() {
                     style={styles.rpgRewardHeaderRow}
                     onPress={() => setFormLinkExpGold(!formLinkExpGold)}
                   >
-                    <Text style={styles.rpgRewardTitle}>Vincular EXP e Ouro</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                      <Link size={15} color="#000000" strokeWidth={2.2} />
+                      <Text style={styles.rpgRewardTitle}>Vincular EXP e Ouro</Text>
+                    </View>
                     <View
                       style={[
                         styles.checkBox,
@@ -1174,9 +1247,9 @@ export default function App() {
                   </TouchableOpacity>
 
                   {formLinkExpGold ? (
-                    <View style={{ gap: 4, marginTop: 4 }}>
+                    <View style={{ gap: 6, marginTop: 4 }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <Sparkles size={14} color="#000000" strokeWidth={2.2} />
+                        <XpIcon size={13} color="#000000" />
                         <Text style={styles.rpgRewardLine}>
                           + {formatNumberBR(computedFormRewards.xp)} XP
                         </Text>
@@ -1214,7 +1287,7 @@ export default function App() {
 
                 {/* Penalidade de falha */}
                 <View style={styles.penaltyBox}>
-                  <AlertTriangle size={14} color="#000000" strokeWidth={2.2} />
+                  <AlertTriangle size={15} color="#000000" strokeWidth={2.2} />
                   <Text style={styles.penaltyText}>
                     Penalidade de falha: {formatNumberBR(computedFormRewards.xp)} XP e{' '}
                     {computedFormRewards.gold} de ouro perdidos ao falhar.
@@ -1223,7 +1296,7 @@ export default function App() {
 
                 {/* Aumentar Habilidade */}
                 <TouchableOpacity
-                  style={[styles.pillBtn, { width: '100%', marginBottom: 8, justifyContent: 'space-between', paddingHorizontal: 12 }]}
+                  style={[styles.pillBtn, { width: '100%', marginBottom: 8, justifyContent: 'space-between', paddingHorizontal: 14 }]}
                   onPress={() =>
                     setShowIncreaseSkillDropdown(!showIncreaseSkillDropdown)
                   }
@@ -1269,7 +1342,7 @@ export default function App() {
 
                 {/* Diminuir Habilidade */}
                 <TouchableOpacity
-                  style={[styles.pillBtn, { width: '100%', marginBottom: 12, justifyContent: 'space-between', paddingHorizontal: 12 }]}
+                  style={[styles.pillBtn, { width: '100%', marginBottom: 12, justifyContent: 'space-between', paddingHorizontal: 14 }]}
                   onPress={() =>
                     setShowDecreaseSkillDropdown(!showDecreaseSkillDropdown)
                   }
@@ -1343,7 +1416,10 @@ export default function App() {
                 keyboardShouldPersistTaps="handled"
               >
                 <View style={[styles.pageHeader, { justifyContent: 'space-between' }]}>
-                  <Text style={styles.pageHeaderTitle}>Loja de Recompensas</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    <ShoppingBag size={18} color="#000000" strokeWidth={2.5} />
+                    <Text style={styles.pageHeaderTitle}>Loja de Recompensas</Text>
+                  </View>
                   <View style={{ flexDirection: 'row', gap: 8 }}>
                     <TouchableOpacity
                       style={[styles.headerActionTag, showShopSearch && styles.headerActionTagActive]}
@@ -1394,6 +1470,11 @@ export default function App() {
                     ]}
                     onPress={() => setShopTab('available')}
                   >
+                    <Gift
+                      size={14}
+                      color={shopTab === 'available' ? '#FFFFFF' : '#000000'}
+                      strokeWidth={2.2}
+                    />
                     <Text
                       style={[
                         styles.shopTabText,
@@ -1411,6 +1492,11 @@ export default function App() {
                     ]}
                     onPress={() => setShopTab('redeemed')}
                   >
+                    <CheckCircle2
+                      size={14}
+                      color={shopTab === 'redeemed' ? '#FFFFFF' : '#000000'}
+                      strokeWidth={2.2}
+                    />
                     <Text
                       style={[
                         styles.shopTabText,
@@ -1424,7 +1510,7 @@ export default function App() {
 
                 {/* Saldo Total */}
                 <View style={styles.shopBalanceBox}>
-                  <Coins size={16} color="#000000" strokeWidth={2.2} />
+                  <Coins size={17} color="#000000" strokeWidth={2.2} />
                   <Text style={styles.shopBalanceText}>
                     Saldo Total: {hero.gold} de ouro
                   </Text>
@@ -1440,7 +1526,10 @@ export default function App() {
                           style={styles.shopItem}
                           onPress={() => setSelectedRewardToRedeem(item)}
                         >
-                          <View style={{ flex: 1, paddingRight: 8 }}>
+                          <View style={styles.shopItemLeft}>
+                            <View style={styles.shopItemIconCircle}>
+                              <Gift size={16} color="#000000" strokeWidth={2.2} />
+                            </View>
                             <Text style={styles.shopItemTitle}>{item.title}</Text>
                           </View>
                           <View
@@ -1469,6 +1558,7 @@ export default function App() {
                   </>
                 ) : redeemedRewards.length === 0 ? (
                   <View style={styles.emptyBox}>
+                    <Gift size={24} color="#000000" strokeWidth={2} style={{ marginBottom: 8 }} />
                     <Text style={styles.emptyBoxTitle}>
                       Nenhuma recompensa resgatada ainda
                     </Text>
@@ -1479,11 +1569,16 @@ export default function App() {
                 ) : (
                   redeemedRewards.map((entry) => (
                     <View key={entry.id} style={styles.shopItem}>
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.shopItemTitle}>{entry.title}</Text>
-                        <Text style={styles.taskDate}>
-                          Resgatado em: {entry.redeemedAt}
-                        </Text>
+                      <View style={styles.shopItemLeft}>
+                        <View style={styles.shopItemIconCircle}>
+                          <Check size={16} color="#000000" strokeWidth={2.5} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.shopItemTitle}>{entry.title}</Text>
+                          <Text style={styles.taskDate}>
+                            Resgatado em: {entry.redeemedAt}
+                          </Text>
+                        </View>
                       </View>
                       <View style={styles.shopPriceBox}>
                         <Text style={styles.shopPriceText}>-{entry.price} ouro</Text>
@@ -1509,12 +1604,15 @@ export default function App() {
             <View style={styles.screenContainer}>
               <ScrollView contentContainerStyle={styles.scrollContent}>
                 <View style={styles.pageHeader}>
-                  <Award size={18} color="#000000" strokeWidth={2.5} />
+                  <Award size={19} color="#000000" strokeWidth={2.5} />
                   <Text style={styles.pageHeaderTitle}>Perfil do Herói &amp; Menu</Text>
                 </View>
 
                 <View style={styles.rpgRewardBox}>
-                  <Text style={styles.formLabel}>NOME DO HERÓI</Text>
+                  <View style={styles.formLabelRow}>
+                    <User size={13} color="#000000" strokeWidth={2.3} />
+                    <Text style={styles.formLabel}>NOME DO HERÓI</Text>
+                  </View>
                   <TextInput
                     style={[styles.formInput, { marginBottom: 10 }]}
                     value={hero.name}
@@ -1522,24 +1620,36 @@ export default function App() {
                       setHero((prev) => ({ ...prev, name: val }))
                     }
                   />
-                  <Text style={styles.rpgRewardLine}>Nível Atual: {hero.level}</Text>
-                  <Text style={styles.rpgRewardLine}>
-                    Experiência Total: {formatNumberBR(hero.xp)} XP ({currentLevelProgressPct}% para o Nível {hero.level + 1})
-                  </Text>
-                  <Text style={styles.rpgRewardLine}>Ouro Disponível: {hero.gold}</Text>
+                  <View style={{ gap: 6 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <Shield size={14} color="#000000" strokeWidth={2.2} />
+                      <Text style={styles.rpgRewardLine}>Nível Atual: {hero.level}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <XpIcon size={13} color="#000000" />
+                      <Text style={styles.rpgRewardLine}>
+                        Experiência Total: {formatNumberBR(hero.xp)} XP ({currentLevelProgressPct}% para o Nível {hero.level + 1})
+                      </Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <Coins size={14} color="#000000" strokeWidth={2.2} />
+                      <Text style={styles.rpgRewardLine}>Ouro Disponível: {hero.gold}</Text>
+                    </View>
+                  </View>
                 </View>
 
                 <View style={styles.rpgRewardBox}>
-                  <Text style={[styles.rpgRewardTitle, { marginBottom: 8 }]}>
-                    HABILIDADES (SKILLS)
-                  </Text>
+                  <View style={[styles.formLabelRow, { marginBottom: 8 }]}>
+                    <TrendingUp size={15} color="#000000" strokeWidth={2.3} />
+                    <Text style={styles.rpgRewardTitle}>HABILIDADES (SKILLS)</Text>
+                  </View>
                   {Object.entries(hero.skills || {}).map(([skillName, pts]) => (
                     <View
                       key={skillName}
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
-                        paddingVertical: 6,
+                        paddingVertical: 7,
                         borderBottomWidth: 1,
                         borderBottomColor: '#E5E5E5',
                       }}
@@ -1551,9 +1661,10 @@ export default function App() {
                 </View>
 
                 <View style={styles.rpgRewardBox}>
-                  <Text style={[styles.rpgRewardTitle, { marginBottom: 8 }]}>
-                    ESTATÍSTICAS DA JORNADA
-                  </Text>
+                  <View style={[styles.formLabelRow, { marginBottom: 8 }]}>
+                    <BarChart2 size={15} color="#000000" strokeWidth={2.3} />
+                    <Text style={styles.rpgRewardTitle}>ESTATÍSTICAS DA JORNADA</Text>
+                  </View>
                   <Text style={styles.rpgRewardLine}>
                     Tarefas Pendentes: {tasks.filter((t) => t.status === 'pending').length}
                   </Text>
@@ -1672,7 +1783,7 @@ export default function App() {
                       </Text>
                     </View>
                     <View style={styles.modalRewardRow}>
-                      <Sparkles size={15} color="#000000" strokeWidth={2.2} />
+                      <XpIcon size={14} color="#000000" />
                       <Text style={styles.modalRewardText}>
                         + {formatNumberBR(confirmTaskModal.task.xpReward)} EXP
                       </Text>
@@ -1913,7 +2024,10 @@ export default function App() {
               <Text style={styles.modalTitle}>Nova Recompensa na Loja</Text>
 
               <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>TÍTULO DA RECOMPENSA</Text>
+                <View style={styles.formLabelRow}>
+                  <Gift size={13} color="#000000" strokeWidth={2.3} />
+                  <Text style={styles.formLabel}>TÍTULO DA RECOMPENSA</Text>
+                </View>
                 <TextInput
                   style={styles.formInput}
                   placeholder="Ex: Assistir 1 filme"
@@ -1924,7 +2038,10 @@ export default function App() {
               </View>
 
               <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>CUSTO EM OURO</Text>
+                <View style={styles.formLabelRow}>
+                  <Coins size={13} color="#000000" strokeWidth={2.3} />
+                  <Text style={styles.formLabel}>CUSTO EM OURO</Text>
+                </View>
                 <TextInput
                   style={styles.formInput}
                   placeholder="Ex: 25"
@@ -1972,18 +2089,20 @@ const styles = StyleSheet.create({
   },
   feedbackToast: {
     backgroundColor: '#000000',
-    paddingVertical: 10,
+    marginHorizontal: 16,
+    marginTop: 10,
+    borderRadius: 16,
+    paddingVertical: 11,
     paddingHorizontal: 14,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 8,
   },
   feedbackToastText: {
     color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '700',
     flex: 1,
-    marginRight: 8,
   },
   screenContainer: {
     flex: 1,
@@ -1996,14 +2115,14 @@ const styles = StyleSheet.create({
   },
   scrollContentWithFooter: {
     padding: 16,
-    paddingBottom: 96,
+    paddingBottom: 98,
   },
 
   /* Hero Card */
   heroCard: {
     backgroundColor: '#FFFFFF',
-    padding: 14,
-    borderRadius: 14,
+    padding: 16,
+    borderRadius: 22,
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1.5,
@@ -2016,15 +2135,15 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   heroAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: 13,
   },
   heroInfo: {
     flex: 1,
@@ -2057,9 +2176,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   heroProgressCircle: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     borderWidth: 2,
     borderColor: '#000000',
     alignItems: 'center',
@@ -2078,14 +2197,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: '#000000',
-    borderRadius: 10,
+    borderRadius: 18,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     marginBottom: 10,
   },
   searchInput: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 11,
     fontSize: 13,
     color: '#000000',
     fontWeight: '600',
@@ -2099,9 +2218,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     gap: 6,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 10,
+    paddingVertical: 11,
+    paddingHorizontal: 12,
+    borderRadius: 20,
     backgroundColor: '#FFFFFF',
     borderWidth: 1.5,
     borderColor: '#000000',
@@ -2129,8 +2248,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderWidth: 1.5,
     borderColor: '#000000',
-    borderRadius: 12,
-    padding: 13,
+    borderRadius: 20,
+    padding: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -2175,9 +2294,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    paddingVertical: 2,
-    paddingHorizontal: 7,
-    borderRadius: 6,
+    paddingVertical: 3,
+    paddingHorizontal: 9,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#000000',
     backgroundColor: '#FAFAFA',
@@ -2201,9 +2320,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   checkBox: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
+    width: 30,
+    height: 30,
+    borderRadius: 10,
     borderWidth: 2,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
@@ -2214,9 +2333,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
   menuDotsBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 8,
+    width: 32,
+    height: 32,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F5F5F5',
@@ -2227,8 +2346,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
   contextMenu: {
-    marginTop: 4,
-    borderRadius: 10,
+    marginTop: 6,
+    borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
@@ -2239,7 +2358,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     gap: 6,
-    paddingVertical: 10,
+    paddingVertical: 11,
     paddingHorizontal: 10,
     borderRightWidth: 1,
     borderRightColor: '#E5E5E5',
@@ -2260,9 +2379,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 18,
     bottom: 18,
-    width: 54,
-    height: 54,
-    borderRadius: 27,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
@@ -2279,7 +2398,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     marginBottom: 16,
-    paddingBottom: 10,
+    paddingBottom: 12,
     borderBottomWidth: 1.5,
     borderBottomColor: '#000000',
   },
@@ -2289,9 +2408,9 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   backLink: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
+    width: 36,
+    height: 36,
+    borderRadius: 12,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
@@ -2301,19 +2420,24 @@ const styles = StyleSheet.create({
   formGroup: {
     marginBottom: 14,
   },
+  formLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 6,
+  },
   formLabel: {
     fontSize: 11,
     fontWeight: '800',
     color: '#000000',
-    marginBottom: 5,
     textTransform: 'uppercase',
     letterSpacing: 0.4,
   },
   formInput: {
     width: '100%',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    paddingVertical: 11,
+    paddingHorizontal: 14,
+    borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
@@ -2324,15 +2448,15 @@ const styles = StyleSheet.create({
   inputWithIconWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    paddingHorizontal: 14,
+    borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
   },
   inputWithIconField: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 11,
     color: '#000000',
     fontSize: 13,
     fontWeight: '600',
@@ -2345,9 +2469,9 @@ const styles = StyleSheet.create({
   },
   dropdownTrigger: {
     width: '100%',
-    paddingVertical: 11,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
@@ -2361,8 +2485,8 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   dropdownList: {
-    marginTop: 4,
-    borderRadius: 10,
+    marginTop: 6,
+    borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
@@ -2372,8 +2496,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+    paddingVertical: 11,
+    paddingHorizontal: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5E5',
     backgroundColor: '#FFFFFF',
@@ -2395,10 +2519,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 10,
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#E5E5E5',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#000000',
+    backgroundColor: '#FFFFFF',
   },
   toggleRowLabel: {
     fontSize: 13,
@@ -2413,11 +2539,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderRadius: 8,
-    borderWidth: 1,
+    borderRadius: 14,
+    borderWidth: 1.5,
     borderColor: '#000000',
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingVertical: 9,
+    paddingHorizontal: 12,
     backgroundColor: '#FFFFFF',
   },
   reminderChipText: {
@@ -2436,15 +2562,21 @@ const styles = StyleSheet.create({
   sliderContainer: {
     marginBottom: 14,
     backgroundColor: '#FFFFFF',
-    padding: 12,
-    borderRadius: 12,
+    padding: 14,
+    borderRadius: 18,
     borderWidth: 1.5,
     borderColor: '#000000',
   },
   sliderHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 4,
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  sliderTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   sliderHeaderText: {
     fontSize: 13,
@@ -2458,8 +2590,8 @@ const styles = StyleSheet.create({
   },
   staticSliderTrack: {
     width: '100%',
-    height: 8,
-    borderRadius: 4,
+    height: 10,
+    borderRadius: 5,
     borderWidth: 1,
     borderColor: '#000000',
     backgroundColor: '#F5F5F5',
@@ -2487,8 +2619,8 @@ const styles = StyleSheet.create({
   },
   rpgRewardBox: {
     backgroundColor: '#FFFFFF',
-    padding: 12,
-    borderRadius: 12,
+    padding: 14,
+    borderRadius: 18,
     borderWidth: 1.5,
     borderColor: '#000000',
     marginVertical: 8,
@@ -2519,10 +2651,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    borderRadius: 10,
-    borderWidth: 1,
+    borderRadius: 16,
+    borderWidth: 1.5,
     borderColor: '#000000',
-    padding: 10,
+    padding: 12,
     marginBottom: 12,
     backgroundColor: '#FFFFFF',
   },
@@ -2552,9 +2684,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     gap: 6,
-    paddingVertical: 11,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
@@ -2580,9 +2712,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 8,
+    paddingVertical: 7,
+    paddingHorizontal: 11,
+    borderRadius: 12,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
@@ -2597,16 +2729,22 @@ const styles = StyleSheet.create({
   },
   shopTabs: {
     flexDirection: 'row',
-    borderRadius: 10,
+    borderRadius: 18,
     borderWidth: 1.5,
     borderColor: '#000000',
     marginBottom: 12,
+    backgroundColor: '#FFFFFF',
+    padding: 3,
     overflow: 'hidden',
   },
   shopTab: {
     flex: 1,
-    paddingVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    gap: 6,
+    paddingVertical: 9,
+    borderRadius: 14,
     backgroundColor: '#FFFFFF',
   },
   shopTabActive: {
@@ -2624,8 +2762,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    padding: 12,
-    borderRadius: 10,
+    padding: 13,
+    borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
@@ -2638,7 +2776,7 @@ const styles = StyleSheet.create({
   },
   shopItem: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: 18,
     borderWidth: 1.5,
     borderColor: '#000000',
     paddingVertical: 12,
@@ -2647,6 +2785,23 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
+  },
+  shopItemLeft: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingRight: 8,
+  },
+  shopItemIconCircle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#000000',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   shopItemTitle: {
     fontSize: 13,
@@ -2657,9 +2812,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 8,
+    paddingVertical: 7,
+    paddingHorizontal: 12,
+    borderRadius: 14,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
@@ -2678,7 +2833,7 @@ const styles = StyleSheet.create({
 
   /* Bottom Navigation */
   bottomNav: {
-    height: 64,
+    height: 66,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1.5,
     borderTopColor: '#000000',
@@ -2691,9 +2846,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    paddingVertical: 9,
+    paddingHorizontal: 18,
+    borderRadius: 22,
     backgroundColor: '#FFFFFF',
   },
   navItemActive: {
@@ -2710,11 +2865,11 @@ const styles = StyleSheet.create({
 
   /* Empty State */
   emptyBox: {
-    borderRadius: 12,
+    borderRadius: 20,
     borderWidth: 1.5,
     borderColor: '#000000',
     backgroundColor: '#FFFFFF',
-    padding: 20,
+    padding: 22,
     alignItems: 'center',
     marginVertical: 8,
   },
@@ -2742,10 +2897,10 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 360,
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    borderRadius: 24,
     borderWidth: 2,
     borderColor: '#000000',
-    padding: 18,
+    padding: 20,
   },
   modalTitle: {
     fontSize: 15,
@@ -2788,9 +2943,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 11,
+    paddingVertical: 12,
     paddingHorizontal: 14,
-    borderRadius: 10,
+    borderRadius: 14,
     borderWidth: 1.5,
     borderColor: '#000000',
     marginBottom: 8,
